@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hamilton - Gestão Financeira Final</title>
+    <title>Hamilton - Gestão Financeira v8</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .tab-content { display: none; }
@@ -18,7 +18,7 @@
         <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 w-80 text-center">
             <h2 class="text-xl font-bold mb-6 text-blue-400">Hamilton Junior</h2>
             <input type="password" id="senha" class="w-full p-3 bg-slate-700 rounded-lg mb-4 text-center border border-slate-600 outline-none font-mono" placeholder="Senha">
-            <button onclick="login()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg text-white">Entrar no Sistema</button>
+            <button onclick="login()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg text-white font-bold uppercase tracking-widest">Entrar</button>
         </div>
     </div>
 
@@ -26,7 +26,7 @@
         
         <header class="py-4 border-b border-slate-800 sticky top-0 bg-slate-900 z-10">
             <div class="flex justify-between items-center mb-4">
-                <h1 class="text-xl font-bold text-blue-400">Extrato Consolidado</h1>
+                <h1 class="text-xl font-bold text-blue-400 uppercase tracking-tighter">Financeiro 360º</h1>
                 <input type="month" id="filtro-mes" onchange="trocarMes()" class="bg-slate-800 p-2 rounded-lg text-sm font-bold border border-slate-700 outline-none">
             </div>
             
@@ -47,27 +47,28 @@
         </header>
 
         <nav class="flex justify-between border-b border-slate-700 my-6 text-[10px] uppercase font-bold tracking-widest overflow-x-auto gap-4">
-            <button onclick="showTab('pearson')" class="tab-btn active-btn pb-2 px-1">Pearson</button>
-            <button onclick="showTab('rendas')" class="tab-btn pb-2 px-1">Gamil/Vôlei/Extras</button>
-            <button onclick="showTab('gastos')" class="tab-btn pb-2 px-1">Despesas</button>
-            <button onclick="showTab('resumo')" class="tab-btn pb-2 px-1">Balanço</button>
+            <button onclick="showTab('pearson')" class="tab-btn active-btn pb-2 px-1 whitespace-nowrap">Pearson</button>
+            <button onclick="showTab('rendas')" class="tab-btn pb-2 px-1 whitespace-nowrap">Entradas</button>
+            <button onclick="showTab('gastos')" class="tab-btn pb-2 px-1 whitespace-nowrap">Saídas</button>
+            <button onclick="showTab('resumo')" class="tab-btn pb-2 px-1 whitespace-nowrap">Balanço</button>
+            <button onclick="showTab('anual')" class="tab-btn pb-2 px-1 whitespace-nowrap text-yellow-500">Anual</button>
         </nav>
 
         <section id="pearson" class="tab-content active">
-            <div class="bg-slate-800 p-5 rounded-2xl mb-6 border border-slate-700 shadow-xl">
-                <div class="grid grid-cols-2 gap-3 mb-4 text-xs">
+            <div class="bg-slate-800 p-5 rounded-2xl mb-6 border border-slate-700">
+                <div class="grid grid-cols-2 gap-3 mb-4 text-xs font-bold uppercase tracking-widest">
                     <div>
-                        <label class="block text-slate-400 mb-1">Data Trabalho:</label>
+                        <label class="block text-slate-400 mb-2">Data Trabalho</label>
                         <input type="date" id="p-data" class="bg-slate-700 p-2 rounded-lg w-full border border-slate-600 outline-none">
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-1">Horas Feitas:</label>
-                        <input type="number" id="p-horas" step="0.5" placeholder="ex: 4.5" class="bg-slate-700 p-2 rounded-lg w-full border border-slate-600 outline-none font-mono">
+                        <label class="block text-slate-400 mb-2">Horas</label>
+                        <input type="number" id="p-horas" step="0.5" class="bg-slate-700 p-2 rounded-lg w-full border border-slate-600 outline-none font-mono">
                     </div>
                 </div>
-                <button onclick="salvarPearson()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition">Registar no Ponto</button>
+                <button onclick="salvarPearson()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg">Registar Ponto</button>
             </div>
-            <div id="lista-ponto" class="space-y-2"></div>
+            <div id="lista-ponto" class="space-y-3"></div>
         </section>
 
         <section id="rendas" class="tab-content">
@@ -75,25 +76,25 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="text-[10px] uppercase text-slate-400 font-bold">Gamil</label>
-                        <input type="number" id="in-gamil" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-blue-400 outline-none" placeholder="0,00">
+                        <input type="number" id="in-gamil" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-blue-400 outline-none">
                     </div>
                     <div>
                         <label class="text-[10px] uppercase text-slate-400 font-bold">Vôlei</label>
-                        <input type="number" id="in-volei" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-orange-400 outline-none" placeholder="0,00">
+                        <input type="number" id="in-volei" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-orange-400 outline-none">
                     </div>
                 </div>
                 <div class="border-t border-slate-700 pt-4">
-                    <label class="text-[10px] uppercase block mb-2 font-bold text-green-400 tracking-wider">Adicionar Ganhos Extras</label>
-                    <input type="text" id="extra-desc" placeholder="Descrição (ex: Vídeo Restaurante)" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 mb-2 text-sm outline-none">
+                    <label class="text-[10px] uppercase block mb-2 font-bold text-green-400">Ganhos Extras (+)</label>
+                    <input type="text" id="extra-desc" placeholder="Descrição do extra" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 mb-2 text-sm outline-none">
                     <div class="flex gap-2">
                         <input type="number" id="extra-val" class="flex-1 bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono outline-none" placeholder="Valor €">
-                        <button onclick="addExtra()" class="bg-green-600 px-6 rounded-lg font-bold text-xl hover:bg-green-500 transition">+</button>
+                        <button onclick="addExtra()" class="bg-green-600 px-6 rounded-lg font-bold">+</button>
                     </div>
+                    <div id="lista-extras" class="mt-4 space-y-2"></div>
                 </div>
-                <div id="lista-extras" class="space-y-2 pt-2"></div>
-                <div class="border-t border-slate-700 pt-4 text-center">
-                    <label class="text-[10px] uppercase text-slate-500">Configuração Valor/Hora Pearson</label>
-                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="bg-transparent border-none text-green-400 font-bold text-xl text-center w-full" step="0.01">
+                <div class="border-t border-slate-700 pt-4">
+                    <label class="text-[10px] uppercase text-slate-500 block mb-1">Preço Hora Pearson</label>
+                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="bg-transparent border-none text-green-400 font-bold text-xl w-full text-center" step="0.01">
                 </div>
             </div>
         </section>
@@ -104,7 +105,7 @@
                     <input type="text" id="g-desc" placeholder="Descrição da Despesa" class="bg-slate-700 p-3 rounded-lg border border-slate-600 text-sm outline-none">
                     <div class="flex gap-2">
                         <input type="number" id="g-val" placeholder="Valor €" class="flex-1 bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono outline-none">
-                        <button onclick="addGasto()" class="bg-red-600 px-6 rounded-lg font-bold hover:bg-red-500 transition">Add</button>
+                        <button onclick="addGasto()" class="bg-red-600 px-6 rounded-lg font-bold">Add</button>
                     </div>
                 </div>
                 <div id="lista-gastos" class="space-y-2"></div>
@@ -113,16 +114,27 @@
 
         <section id="resumo" class="tab-content">
             <div class="space-y-4">
+                <div class="bg-slate-800 p-6 rounded-2xl border-l-8 border-blue-500 shadow-lg">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Bruto Recebido Mês</p>
+                    <h2 id="res-bruto" class="text-4xl font-mono font-bold mt-2">0,00 €</h2>
+                </div>
                 <div class="bg-slate-800 p-6 rounded-2xl border-l-8 border-yellow-500 shadow-lg">
-                    <p class="text-[10px] text-yellow-500 uppercase font-bold tracking-widest">Reserva para Dízimo (10%)</p>
+                    <p class="text-[10px] text-yellow-500 uppercase font-bold tracking-widest">Dízimo (10%)</p>
                     <h2 id="res-dizimo" class="text-3xl font-mono font-bold mt-2 text-yellow-500">0,00 €</h2>
                 </div>
-                <div class="bg-slate-800 p-6 rounded-2xl border-l-8 border-slate-500 shadow-lg opacity-80">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Trânsito de Meses Anteriores</p>
-                    <h2 id="res-anterior" class="text-xl font-mono font-bold mt-2 text-slate-300">0,00 €</h2>
+                <div id="card-liq-detalhe" class="p-6 rounded-2xl border-l-8 shadow-xl transition-all duration-500">
+                    <p class="text-[10px] uppercase font-bold tracking-widest">Saldo Líquido (Mês)</p>
+                    <h2 id="res-liquido" class="text-4xl font-mono font-bold mt-2">0,00 €</h2>
                 </div>
-                <p class="text-[9px] text-slate-600 italic text-center leading-relaxed">O saldo geral no topo reflete o que tens realmente disponível, carregando o histórico anterior.</p>
+                <div class="bg-slate-800 p-4 rounded-xl border-l-8 border-slate-600 opacity-60">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest text-left">Trânsito Acumulado Anterior</p>
+                    <h2 id="res-anterior" class="text-xl font-mono font-bold mt-2 text-left">0,00 €</h2>
+                </div>
             </div>
+        </section>
+
+        <section id="anual" class="tab-content">
+            <div id="corpo-anual" class="space-y-4"></div>
         </section>
     </div>
 
@@ -157,6 +169,7 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-btn'));
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active-btn');
+            if(tabId === 'anual') gerarRelatorioAnual();
         };
 
         let unsubs = [];
@@ -174,7 +187,6 @@
             let brutoAcumulado = 0;
             let gastosAcumulados = 0;
 
-            // Busca histórico total ANTES do mês atual para o carry-over
             const rS = await getDocs(collection(db, "rendas_fixas"));
             rS.forEach(d => { if(d.id < mesFiltro) brutoAcumulado += (d.data().gamil + d.data().volei); });
 
@@ -187,7 +199,6 @@
             const gS = await getDocs(collection(db, "gastos"));
             gS.forEach(d => { if(d.data().mesRef < mesFiltro) gastosAcumulados += d.data().val; });
 
-            // Saldo líquido acumulado descontando o dízimo proporcional do passado
             window.saldoAnterior = (brutoAcumulado * 0.90) - gastosAcumulados;
             document.getElementById('res-anterior').innerText = fmt(window.saldoAnterior);
         }
@@ -195,21 +206,18 @@
         window.salvarPearson = async () => {
             const dStr = document.getElementById('p-data').value;
             const h = parseFloat(document.getElementById('p-horas').value);
-            if(!dStr || isNaN(h)) return alert("Preencha data e horas.");
+            if(!dStr || isNaN(h)) return;
             const d = new Date(dStr);
             const dia = d.getUTCDate();
             let mR = d.getUTCMonth(); let aR = d.getUTCFullYear();
+            let previsao = (dia >= 11 && dia <= 25) ? "Recebe Dia 10" : "Recebe Dia 25";
             
-            // Regra: se trabalhou a partir do dia 11, o dinheiro só cai no mês seguinte
             if (dia >= 11) mR += 1;
             if (mR > 11) { mR = 0; aR += 1; }
             const mesRef = `${aR}-${String(mR + 1).padStart(2, '0')}`;
             
             await addDoc(collection(db, "pearson"), { 
-                dataTrab: dStr, 
-                horas: h, 
-                mesRef: mesRef, 
-                timestamp: new Date().getTime() 
+                dataTrab: dStr, horas: h, mesRef, previsao, ano: String(aR) 
             });
             document.getElementById('p-horas').value = '';
         };
@@ -218,16 +226,16 @@
             const mes = document.getElementById('filtro-mes').value;
             const gamil = parseFloat(document.getElementById('in-gamil').value) || 0;
             const volei = parseFloat(document.getElementById('in-volei').value) || 0;
-            await setDoc(doc(db, "rendas_fixas", mes), { gamil, volei });
+            await setDoc(doc(db, "rendas_fixas", mes), { gamil, volei, ano: mes.substring(0,4) });
             calcularTudo();
         };
 
         window.addExtra = async () => {
             const mes = document.getElementById('filtro-mes').value;
-            const desc = document.getElementById('extra-desc').value;
+            const desc = document.getElementById('extra-desc').value || "Extra";
             const val = parseFloat(document.getElementById('extra-val').value);
-            if(isNaN(val)) return alert("Coloque um valor.");
-            await addDoc(collection(db, "extras"), { desc: desc || "Ganho Extra", valor: val, mesRef: mes });
+            if(isNaN(val)) return;
+            await addDoc(collection(db, "extras"), { desc, valor: val, mesRef: mes, ano: mes.substring(0,4) });
             document.getElementById('extra-desc').value = '';
             document.getElementById('extra-val').value = '';
         };
@@ -236,20 +244,14 @@
             const mes = document.getElementById('filtro-mes').value;
             const desc = document.getElementById('g-desc').value;
             const val = parseFloat(document.getElementById('g-val').value);
-            if(!desc || isNaN(val)) return alert("Preencha descrição e valor.");
-            await addDoc(collection(db, "gastos"), { desc, val, mesRef: mes });
-            document.getElementById('g-desc').value = '';
-            document.getElementById('g-val').value = '';
+            if(desc && !isNaN(val)) {
+                await addDoc(collection(db, "gastos"), { desc, val, mesRef: mes, ano: mes.substring(0,4) });
+                document.getElementById('g-desc').value = ''; document.getElementById('g-val').value = '';
+            }
         };
 
-        window.remover = async (col, id) => { 
-            if(confirm("Tem certeza que deseja apagar este registo?")) await deleteDoc(doc(db, col, id)); 
-        };
-
-        window.atualizarVH = () => { 
-            localStorage.setItem('vh', document.getElementById('cfg-vh').value); 
-            trocarMes(); 
-        };
+        window.remover = async (col, id) => { if(confirm("Apagar?")) await deleteDoc(doc(db, col, id)); };
+        window.atualizarVH = () => { localStorage.setItem('vh', document.getElementById('cfg-vh').value); trocarMes(); };
 
         function carregarDados(mes) {
             const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
@@ -261,63 +263,31 @@
                 calcularTudo();
             });
 
-            // Listeners Real-time
             unsubs.push(onSnapshot(query(collection(db, "pearson"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', total = 0;
                 snap.forEach(d => { 
-                    const data = d.data();
-                    const sub = data.horas * vh;
-                    total += sub; 
-                    html += `
-                    <div class="bg-slate-800 p-3 rounded-xl flex justify-between items-center border border-slate-700 shadow-sm">
-                        <div class="text-[10px] uppercase font-bold text-slate-500">
-                            Trab: ${data.dataTrab} <br> 
-                            <span class="text-blue-400 text-xs">${data.horas}h registadas</span>
-                        </div>
-                        <div class="flex gap-4 items-center">
-                            <span class="font-mono text-emerald-400 font-bold">${fmt(sub)}</span>
-                            <button onclick="remover('pearson','${d.id}')" class="text-slate-600 hover:text-red-500 transition">✕</button>
-                        </div>
+                    const data = d.data(); const sub = data.horas * vh; total += sub;
+                    html += `<div class="bg-slate-800 p-3 rounded-xl flex justify-between border-l-4 border-blue-500">
+                        <div class="text-[10px]"><span class="block text-slate-500">${data.dataTrab}</span><span class="font-bold">${data.horas}h - ${data.previsao}</span></div>
+                        <div class="flex gap-3 items-center font-mono text-emerald-400 font-bold">${fmt(sub)} <button onclick="remover('pearson','${d.id}')" class="text-slate-600">✕</button></div>
                     </div>`;
                 });
-                document.getElementById('lista-ponto').innerHTML = html || '<p class="text-center text-slate-600 text-[10px] py-4">Sem horas previstas para cair neste mês.</p>';
-                window.totalP = total; calcularTudo();
+                document.getElementById('lista-ponto').innerHTML = html; window.totalP = total; calcularTudo();
             }));
 
             unsubs.push(onSnapshot(query(collection(db, "extras"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', total = 0;
                 snap.forEach(d => {
-                    const data = d.data();
-                    total += data.valor;
-                    html += `
-                    <div class="bg-slate-900/50 p-3 rounded-lg flex justify-between items-center text-xs">
-                        <span class="text-blue-300">${data.desc}</span>
-                        <div class="flex gap-3 items-center">
-                            <span class="font-mono font-bold">${fmt(data.valor)}</span>
-                            <button onclick="remover('extras','${d.id}')" class="text-slate-600">✕</button>
-                        </div>
-                    </div>`;
+                    total += d.data().valor;
+                    html += `<div class="bg-slate-800 p-3 rounded-lg flex justify-between text-xs border border-slate-700"><span>${d.data().desc}</span><div class="flex gap-2 font-mono"><span>${fmt(d.data().valor)}</span><button onclick="remover('extras','${d.id}')">✕</button></div></div>`;
                 });
-                document.getElementById('lista-extras').innerHTML = html;
-                window.totalE = total; calcularTudo();
+                document.getElementById('lista-extras').innerHTML = html; window.totalE = total; calcularTudo();
             }));
 
             unsubs.push(onSnapshot(query(collection(db, "gastos"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', total = 0;
-                snap.forEach(d => {
-                    const data = d.data();
-                    total += data.val;
-                    html += `
-                    <div class="bg-slate-700/30 p-3 rounded-lg flex justify-between items-center text-xs">
-                        <span class="font-bold text-slate-200 uppercase tracking-tighter">${data.desc}</span>
-                        <div class="flex gap-3 items-center">
-                            <span class="text-red-400 font-mono font-bold">${fmt(data.val)}</span>
-                            <button onclick="remover('gastos','${d.id}')" class="text-slate-500">✕</button>
-                        </div>
-                    </div>`;
-                });
-                document.getElementById('lista-gastos').innerHTML = html || '<p class="text-center text-slate-600 text-xs italic py-4">Sem despesas registadas.</p>';
-                window.totalG = total; calcularTudo();
+                snap.forEach(d => { total += d.data().val; html += `<div class="bg-slate-700/30 p-2 rounded flex justify-between text-xs uppercase font-bold"><span>${d.data().desc}</span><div class="flex gap-3 text-red-400"><span>${fmt(d.data().val)}</span><button onclick="remover('gastos','${d.id}')" class="text-slate-500 font-normal">✕</button></div></div>`; });
+                document.getElementById('lista-gastos').innerHTML = h || html; window.totalG = total; calcularTudo();
             }));
         }
 
@@ -327,24 +297,52 @@
             const brutoMes = gamil + volei + (window.totalP || 0) + (window.totalE || 0);
             const gastosMes = window.totalG || 0;
             const dizimoMes = brutoMes * 0.10;
-            
-            // Saldo Final Consolidado = Saldo Anterior + Ganhos Mês - Gastos Mês - Dízimo Mês
-            const saldoGeral = (window.saldoAnterior || 0) + brutoMes - gastosMes - dizimoMes;
+            const liqMes = brutoMes - dizimoMes - gastosMes;
+            const saldoGeral = (window.saldoAnterior || 0) + liqMes;
 
             document.getElementById('top-ganhos').innerText = fmt(brutoMes);
             document.getElementById('top-gastos').innerText = fmt(gastosMes);
             document.getElementById('top-saldo').innerText = fmt(saldoGeral);
+            document.getElementById('res-bruto').innerText = fmt(brutoMes);
             document.getElementById('res-dizimo').innerText = fmt(dizimoMes);
+            document.getElementById('res-liquido').innerText = fmt(liqMes);
 
-            // Cores do Dashboard
-            const cardSaldo = document.getElementById('top-card-saldo');
-            if (saldoGeral >= 0) {
-                cardSaldo.style.borderBottomColor = "#10b981";
-                document.getElementById('top-saldo').style.color = "#10b981";
-            } else {
-                cardSaldo.style.borderBottomColor = "#ef4444";
-                document.getElementById('top-saldo').style.color = "#ef4444";
-            }
+            // Cores do Saldo Geral
+            document.getElementById('top-card-saldo').style.borderBottomColor = saldoGeral >= 0 ? "#10b981" : "#ef4444";
+            document.getElementById('top-saldo').style.color = saldoGeral >= 0 ? "#10b981" : "#ef4444";
+            
+            // Cores do Balanço Mensal
+            const cardLiq = document.getElementById('card-liq-detalhe');
+            cardLiq.style.borderLeftColor = liqMes >= 0 ? "#10b981" : "#ef4444";
+            cardLiq.style.backgroundColor = liqMes >= 0 ? "rgba(6, 78, 59, 0.4)" : "rgba(127, 29, 29, 0.4)";
+        }
+
+        async function gerarRelatorioAnual() {
+            const ano = document.getElementById('filtro-mes').value.substring(0, 4);
+            let tB = 0, tG = 0; const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
+            const pS = await getDocs(query(collection(db, "pearson"), where("ano", "==", ano)));
+            pS.forEach(d => tB += (d.data().horas * vh));
+            const rS = await getDocs(query(collection(db, "rendas_fixas"), where("ano", "==", ano)));
+            rS.forEach(d => tB += (d.data().gamil + d.data().volei));
+            const eS = await getDocs(query(collection(db, "extras"), where("ano", "==", ano)));
+            eS.forEach(d => tB += d.data().valor);
+            const gS = await getDocs(query(collection(db, "gastos"), where("ano", "==", ano)));
+            gS.forEach(d => tG += d.data().val);
+            const tD = tB * 0.10; const tL = tB - tD - tG;
+
+            document.getElementById('corpo-anual').innerHTML = `
+                <div class="bg-slate-800 p-6 rounded-2xl border border-yellow-500/30">
+                    <h3 class="text-xl font-bold text-yellow-500 mb-6 uppercase text-xs tracking-widest italic text-center">Consolidado ${ano}</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between border-b border-slate-700 pb-2"><span>Bruto Anual</span><span class="font-mono text-emerald-400 font-bold">${fmt(tB)}</span></div>
+                        <div class="flex justify-between border-b border-slate-700 pb-2"><span>Reserva Dízimo</span><span class="font-mono text-yellow-500 font-bold">${fmt(tD)}</span></div>
+                        <div class="flex justify-between border-b border-slate-700 pb-2"><span>Despesas Totais</span><span class="font-mono text-red-400 font-bold">${fmt(tG)}</span></div>
+                        <div class="bg-slate-900 p-4 rounded-xl text-center">
+                            <p class="text-[10px] uppercase text-slate-500 mb-1">Acumulado Líquido do Ano</p>
+                            <h2 class="text-3xl font-mono font-bold ${tL >= 0 ? 'text-emerald-400' : 'text-red-400'}">${fmt(tL)}</h2>
+                        </div>
+                    </div>
+                </div>`;
         }
     </script>
 </body>
