@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor Financeiro - Hamilton</title>
+    <title>Financeiro Hamilton - Fluxo Mensal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .tab-content { display: none; }
@@ -17,7 +17,7 @@
     <div id="login-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
         <div class="bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700 w-80 text-center">
             <h2 class="text-xl font-bold mb-6">Acesso Privado</h2>
-            <input type="password" id="senha" class="w-full p-3 bg-gray-700 rounded-lg mb-4 text-center border border-gray-600 focus:border-blue-500 outline-none" placeholder="Senha">
+            <input type="password" id="senha" class="w-full p-3 bg-gray-700 rounded-lg mb-4 text-center border border-gray-600 outline-none" placeholder="Senha">
             <button onclick="login()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg">Entrar</button>
         </div>
     </div>
@@ -25,8 +25,8 @@
     <div id="main-content" class="hidden max-w-lg mx-auto p-4 pb-24">
         <header class="py-6 flex justify-between items-center border-b border-gray-800 mb-4">
             <div>
-                <h1 class="text-2xl font-bold text-blue-400">Livro de Ponto</h1>
-                <p class="text-xs text-gray-500">Hamilton Junior</p>
+                <h1 class="text-2xl font-bold text-blue-400">Meu Extrato</h1>
+                <input type="month" id="filtro-mes" onchange="trocarMes()" class="bg-transparent text-sm text-gray-400 outline-none cursor-pointer">
             </div>
             <div class="text-right">
                 <span class="text-xs text-gray-400 block uppercase">Valor/Hora</span>
@@ -35,101 +35,83 @@
         </header>
 
         <nav class="flex justify-between border-b border-gray-700 mb-6 text-sm">
-            <button onclick="showTab('pearson')" class="tab-btn active-btn pb-2 px-2 transition">Pearson</button>
-            <button onclick="showTab('rendas')" class="tab-btn pb-2 px-2 transition">Rendas</button>
-            <button onclick="showTab('gastos')" class="tab-btn pb-2 px-2 transition">Gastos</button>
-            <button onclick="showTab('resumo')" class="tab-btn pb-2 px-2 transition uppercase font-bold">Total</button>
+            <button onclick="showTab('pearson')" class="tab-btn active-btn pb-2 px-2">Pearson</button>
+            <button onclick="showTab('rendas')" class="tab-btn pb-2 px-2">Entradas</button>
+            <button onclick="showTab('gastos')" class="tab-btn pb-2 px-2">Gastos</button>
+            <button onclick="showTab('resumo')" class="tab-btn pb-2 px-2 uppercase font-bold">Balanço</button>
         </nav>
 
         <section id="pearson" class="tab-content active">
-            <div class="bg-gray-800 p-5 rounded-xl shadow-lg mb-6 border border-gray-700">
-                <h3 class="font-bold mb-4 flex items-center gap-2">
-                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Registrar Horas
-                </h3>
+            <div class="bg-gray-800 p-5 rounded-xl mb-6 border border-gray-700">
                 <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="flex flex-col gap-1">
-                        <label class="text-[10px] uppercase text-gray-400 ml-1">Data</label>
-                        <input type="date" id="p-data" class="bg-gray-700 p-2 rounded-lg text-sm border border-gray-600">
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <label class="text-[10px] uppercase text-gray-400 ml-1">Horas</label>
-                        <input type="number" id="p-horas" step="0.5" placeholder="Ex: 4.5" class="bg-gray-700 p-2 rounded-lg text-sm border border-gray-600">
-                    </div>
+                    <input type="date" id="p-data" class="bg-gray-700 p-2 rounded-lg text-sm border border-gray-600">
+                    <input type="number" id="p-horas" step="0.5" placeholder="Horas" class="bg-gray-700 p-2 rounded-lg text-sm border border-gray-600">
                 </div>
-                <button onclick="salvarPearson()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition">Adicionar ao Ponto</button>
+                <button onclick="salvarPearson()" class="w-full bg-blue-600 py-2 rounded-lg font-bold">Lançar Horas</button>
             </div>
-
-            <h4 class="text-xs font-bold text-gray-500 mb-3 uppercase tracking-widest">Histórico de Lançamentos</h4>
-            <div id="lista-ponto" class="space-y-3">
-                </div>
+            <div id="lista-ponto" class="space-y-3"></div>
         </section>
 
         <section id="rendas" class="tab-content">
-            <div class="bg-gray-800 p-5 rounded-xl space-y-5 border border-gray-700 shadow-lg">
-                <div>
-                    <label class="text-xs text-gray-400 block mb-1 uppercase">Configurar Valor/Hora Pearson (€)</label>
-                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="w-full bg-gray-700 p-3 rounded-lg border border-gray-600 font-mono text-green-400 text-lg">
-                </div>
+            <div class="bg-gray-800 p-5 rounded-xl space-y-4 border border-gray-700">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="text-xs text-gray-400 block mb-1 uppercase text-blue-400">Gamil (€)</label>
-                        <input type="number" id="in-gamil" class="w-full bg-gray-700 p-3 rounded-lg border border-gray-600 font-mono">
+                        <label class="text-[10px] text-gray-400 uppercase">Gamil (Dia 30)</label>
+                        <input type="number" id="in-gamil" onchange="salvarRendaFixa()" class="w-full bg-gray-700 p-2 rounded border border-gray-600 font-mono">
                     </div>
                     <div>
-                        <label class="text-xs text-gray-400 block mb-1 uppercase text-orange-400">Vôlei (€)</label>
-                        <input type="number" id="in-volei" class="w-full bg-gray-700 p-3 rounded-lg border border-gray-600 font-mono">
+                        <label class="text-[10px] text-gray-400 uppercase">Vôlei (Dia 28)</label>
+                        <input type="number" id="in-volei" onchange="salvarRendaFixa()" class="w-full bg-gray-700 p-2 rounded border border-gray-600 font-mono">
                     </div>
                 </div>
                 <div class="border-t border-gray-700 pt-4">
-                    <label class="text-xs text-gray-400 block mb-2 uppercase italic">Extras (Clique no + para cada entrada)</label>
+                    <label class="text-[10px] text-gray-400 uppercase block mb-2">Adicionar Extras (+)</label>
                     <div class="flex gap-2">
-                        <input type="number" id="in-extra" class="flex-1 bg-gray-700 p-3 rounded-lg border border-gray-600 font-mono" placeholder="0.00">
-                        <button onclick="addExtra()" class="bg-green-600 px-6 rounded-lg font-bold text-xl hover:bg-green-500 transition">+</button>
+                        <input type="number" id="in-extra" class="flex-1 bg-gray-700 p-2 rounded border border-gray-600" placeholder="€">
+                        <button onclick="addExtra()" class="bg-green-600 px-4 rounded font-bold">+</button>
                     </div>
-                    <div id="lista-extras" class="mt-4 p-3 bg-gray-900 rounded-lg text-sm text-blue-300 font-mono">
-                        Aguardando dados...
-                    </div>
+                    <div id="lista-extras" class="mt-3 space-y-1 text-xs text-blue-300 font-mono"></div>
+                </div>
+                <div class="border-t border-gray-700 pt-2">
+                    <label class="text-[10px] text-gray-400 uppercase">Ajustar Valor/Hora</label>
+                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="w-full bg-transparent border-none text-green-400 font-bold">
                 </div>
             </div>
         </section>
 
         <section id="gastos" class="tab-content">
-            <div class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg">
-                <h3 class="font-bold mb-4">Registar Gasto</h3>
+            <div class="bg-gray-800 p-5 rounded-xl border border-gray-700">
                 <div class="flex gap-2 mb-6">
-                    <input type="text" id="g-desc" placeholder="Ex: Renda" class="flex-1 bg-gray-700 p-3 rounded-lg border border-gray-600">
-                    <input type="number" id="g-val" placeholder="€" class="w-24 bg-gray-700 p-3 rounded-lg border border-gray-600 font-mono">
-                    <button onclick="addGasto()" class="bg-red-600 px-4 rounded-lg font-bold hover:bg-red-500 transition">Add</button>
+                    <input type="text" id="g-desc" placeholder="Conta" class="flex-1 bg-gray-700 p-2 rounded border border-gray-600">
+                    <input type="number" id="g-val" placeholder="€" class="w-20 bg-gray-700 p-2 rounded border border-gray-600">
+                    <button onclick="addGasto()" class="bg-red-600 px-4 rounded font-bold">Add</button>
                 </div>
-                <div id="lista-gastos" class="space-y-2">
-                    </div>
+                <div id="lista-gastos" class="space-y-2"></div>
             </div>
         </section>
 
         <section id="resumo" class="tab-content">
-            <div class="grid grid-cols-1 gap-4">
-                <div class="bg-gray-800 p-6 rounded-2xl border-l-8 border-blue-500 shadow-xl">
-                    <p class="text-xs text-gray-400 uppercase font-bold tracking-widest">Ganhos Totais (Bruto)</p>
-                    <h2 id="res-bruto" class="text-4xl font-mono font-bold mt-2">€ 0.00</h2>
+            <div class="space-y-4">
+                <div class="bg-gray-800 p-5 rounded-2xl border-l-8 border-blue-500">
+                    <p class="text-[10px] text-gray-400 uppercase">Entradas Acumuladas</p>
+                    <h2 id="res-bruto" class="text-3xl font-mono font-bold">€ 0.00</h2>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-2xl border-l-8 border-yellow-500 shadow-xl">
-                    <p class="text-xs text-gray-400 uppercase font-bold tracking-widest text-yellow-500">Dízimo (10%)</p>
-                    <h2 id="res-dizimo" class="text-3xl font-mono font-bold mt-2 text-yellow-500">€ 0.00</h2>
+                <div class="bg-gray-800 p-5 rounded-2xl border-l-8 border-yellow-500 text-yellow-500">
+                    <p class="text-[10px] uppercase">Dízimo (10%)</p>
+                    <h2 id="res-dizimo" class="text-2xl font-mono font-bold">€ 0.00</h2>
                 </div>
-                <div class="bg-green-900 p-6 rounded-2xl border-l-8 border-green-400 shadow-xl">
-                    <p class="text-xs text-green-300 uppercase font-bold tracking-widest">Saldo Real (Líquido)</p>
-                    <h2 id="res-liquido" class="text-4xl font-mono font-bold mt-2 text-green-100">€ 0.00</h2>
+                <div class="bg-green-900 p-5 rounded-2xl border-l-8 border-green-400">
+                    <p class="text-[10px] text-green-300 uppercase">Saldo Livre para Economizar</p>
+                    <h2 id="res-liquido" class="text-3xl font-mono font-bold text-green-100">€ 0.00</h2>
                 </div>
-                <p class="text-[10px] text-gray-500 text-center mt-4 italic">Cálculo: (Pearson + Gamil + Vôlei + Extras) - Dízimo - Gastos</p>
             </div>
         </section>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIGURAÇÃO VINDA DA TUA IMAGEM
         const firebaseConfig = {
             apiKey: "AIzaSyA7nFxZzTDpLLGZZPmey_kt5Y_AYrWBgt8",
             authDomain: "balanco-3160d.firebaseapp.com",
@@ -142,15 +124,18 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // LOGIN E NAVEGAÇÃO
+        // --- INICIALIZAÇÃO ---
+        window.onload = () => {
+            const agora = new Date();
+            const mesAno = agora.toISOString().substring(0, 7);
+            document.getElementById('filtro-mes').value = mesAno;
+        };
+
         window.login = () => {
-            const senhaDigitada = document.getElementById('senha').value;
-            if(senhaDigitada === 'hamilton2026') {
+            if(document.getElementById('senha').value === 'hamilton2026') {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-content').classList.remove('hidden');
-                carregarDadosIniciais();
-            } else {
-                alert("Senha incorreta!");
+                trocarMes();
             }
         };
 
@@ -159,166 +144,149 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-btn'));
             document.getElementById(tabId).classList.add('active');
             event.currentTarget.classList.add('active-btn');
-            calcularTudo();
         };
 
-        // LÓGICA DE DATAS DE PAGAMENTO (PEARSON)
-        window.calcularPagamento = (dataStr) => {
-            const data = new Date(dataStr);
-            const dia = data.getUTCDate();
-            const mes = data.getUTCMonth();
-            const ano = data.getUTCFullYear();
-
-            // Regra: 11 a 25 recebe no dia 10 do mês seguinte
-            if (dia >= 11 && dia <= 25) {
-                const mesRec = (mes + 1) % 12;
-                const anoRec = mes === 11 ? ano + 1 : ano;
-                return { label: `Recebe 10/${String(mesRec + 1).padStart(2, '0')}`, cor: "blue" };
-            } 
-            // Regra: 26 a 10 recebe no dia 25 (ou deste mês se for dia < 10, ou do próximo se for dia > 26)
-            else {
-                let mesRec = (dia >= 26) ? (mes + 1) % 12 : mes;
-                let anoRec = (dia >= 26 && mes === 11) ? ano + 1 : ano;
-                return { label: `Recebe 25/${String(mesRec + 1).padStart(2, '0')}`, cor: "purple" };
-            }
+        // --- LÓGICA DE MESES ---
+        let unsubs = [];
+        window.trocarMes = () => {
+            const mes = document.getElementById('filtro-mes').value;
+            unsubs.forEach(u => u()); // Limpa escutas anteriores
+            unsubs = [];
+            carregarDados(mes);
         };
 
-        // SALVAR DADOS
+        // --- SALVAR DADOS ---
         window.salvarPearson = async () => {
             const data = document.getElementById('p-data').value;
             const horas = parseFloat(document.getElementById('p-horas').value);
-            const vh = parseFloat(localStorage.getItem('vh')) || 0;
-            
-            if(!data || isNaN(horas)) return alert("Preencha data e horas!");
+            const mesRef = data.substring(0, 7);
+            if(!data || isNaN(horas)) return;
 
-            const info = calcularPagamento(data);
+            const dia = new Date(data).getUTCDate();
+            const previsao = (dia >= 11 && dia <= 25) ? "Recebe Dia 10" : "Recebe Dia 25";
 
-            try {
-                await addDoc(collection(db, "pearson"), {
-                    data,
-                    horas,
-                    previsao: info.label,
-                    cor: info.cor,
-                    valorDia: horas * vh,
-                    createdAt: new Date()
-                });
-                document.getElementById('p-horas').value = '';
-            } catch (e) { alert("Erro ao salvar: " + e); }
+            await addDoc(collection(db, "pearson"), { data, horas, mesRef, previsao });
+            document.getElementById('p-horas').value = '';
+        };
+
+        window.salvarRendaFixa = async () => {
+            const mes = document.getElementById('filtro-mes').value;
+            const gamil = parseFloat(document.getElementById('in-gamil').value) || 0;
+            const volei = parseFloat(document.getElementById('in-volei').value) || 0;
+            await setDoc(doc(db, "rendas_fixas", mes), { gamil, volei });
         };
 
         window.addExtra = async () => {
+            const mes = document.getElementById('filtro-mes').value;
             const valor = parseFloat(document.getElementById('in-extra').value);
-            if(isNaN(valor)) return;
-            await addDoc(collection(db, "extras"), { valor, data: new Date() });
-            document.getElementById('in-extra').value = '';
+            if(!isNaN(valor)) {
+                await addDoc(collection(db, "extras"), { valor, mesRef: mes, data: new Date() });
+                document.getElementById('in-extra').value = '';
+            }
         };
 
         window.addGasto = async () => {
+            const mes = document.getElementById('filtro-mes').value;
             const desc = document.getElementById('g-desc').value;
             const val = parseFloat(document.getElementById('g-val').value);
             if(desc && !isNaN(val)) {
-                await addDoc(collection(db, "gastos"), { desc, val });
+                await addDoc(collection(db, "gastos"), { desc, val, mesRef: mes });
                 document.getElementById('g-desc').value = '';
                 document.getElementById('g-val').value = '';
             }
         };
 
-        window.atualizarVH = () => {
-            const v = document.getElementById('cfg-vh').value;
-            localStorage.setItem('vh', v);
-            document.getElementById('vh-val').innerText = parseFloat(v).toFixed(2);
-            calcularTudo();
-        };
+        // --- CARREGAR E CALCULAR ---
+        function carregarDados(mes) {
+            const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
+            document.getElementById('vh-val').innerText = vh.toFixed(2);
+            document.getElementById('cfg-vh').value = vh;
 
-        window.removerItem = async (colecao, id) => {
-            if(confirm("Deseja apagar este registo?")) {
-                await deleteDoc(doc(db, colecao, id));
-            }
-        };
+            // Rendas Fixas (Gamil e Vôlei) do mês
+            getDoc(doc(db, "rendas_fixas", mes)).then(s => {
+                if(s.exists()) {
+                    document.getElementById('in-gamil').value = s.data().gamil;
+                    document.getElementById('in-volei').value = s.data().volei;
+                } else {
+                    document.getElementById('in-gamil').value = 0;
+                    document.getElementById('in-volei').value = 0;
+                }
+                calcularTudo();
+            });
 
-        // ESCUTAR DADOS EM TEMPO REAL
-        function carregarDadosIniciais() {
-            const vhSalvo = localStorage.getItem('vh') || "15.75";
-            document.getElementById('cfg-vh').value = vhSalvo;
-            document.getElementById('vh-val').innerText = parseFloat(vhSalvo).toFixed(2);
-
-            // Ouvir Pearson
-            onSnapshot(query(collection(db, "pearson"), orderBy("data", "desc")), (snap) => {
-                let html = '';
-                let totalH = 0;
-                let vh = parseFloat(localStorage.getItem('vh')) || 0;
-                
-                snap.forEach(docSnap => {
-                    const d = docSnap.data();
-                    const totalDia = d.horas * vh;
-                    totalH += d.horas;
-                    html += `
-                    <div class="bg-gray-800 p-3 rounded-lg flex justify-between items-center border-l-4 border-${d.cor}-500 shadow-sm">
-                        <div>
-                            <p class="text-[10px] text-gray-500 uppercase">${d.data}</p>
-                            <p class="text-sm font-bold">${d.horas} horas <span class="text-[10px] font-normal text-gray-400 ml-2">(${d.previsao})</span></p>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <span class="font-mono text-green-400 font-bold text-sm">€ ${totalDia.toFixed(2)}</span>
-                            <button onclick="removerItem('pearson', '${docSnap.id}')" class="text-gray-600 hover:text-red-500 text-xs">✕</button>
+            // Pearson
+            const qP = query(collection(db, "pearson"), where("mesRef", "==", mes));
+            unsubs.push(onSnapshot(qP, (snap) => {
+                let h = '', total = 0;
+                snap.forEach(d => {
+                    const data = d.data();
+                    const sub = data.horas * vh;
+                    total += sub;
+                    h += `<div class="bg-gray-800 p-3 rounded-lg flex justify-between border-l-4 ${data.previsao.includes('10')?'border-blue-500':'border-purple-500'}">
+                        <span class="text-xs">${data.data} (${data.horas}h)</span>
+                        <div class="flex gap-3 items-center">
+                            <span class="font-bold text-green-400 text-sm">€ ${sub.toFixed(2)}</span>
+                            <button onclick="remover('pearson','${d.id}')" class="text-gray-600">✕</button>
                         </div>
                     </div>`;
                 });
-                document.getElementById('lista-ponto').innerHTML = html || '<p class="text-center text-gray-600 py-4">Sem registos.</p>';
-                window.totalPearson = totalH * vh;
+                document.getElementById('lista-ponto').innerHTML = h;
+                window.totalP = total;
                 calcularTudo();
-            });
+            }));
 
-            // Ouvir Extras
-            onSnapshot(collection(db, "extras"), (snap) => {
-                let totalEx = 0;
-                snap.forEach(d => totalEx += d.data().valor);
-                document.getElementById('lista-extras').innerText = `Acumulado Extras: € ${totalEx.toFixed(2)}`;
-                window.totalExtras = totalEx;
+            // Extras
+            const qE = query(collection(db, "extras"), where("mesRef", "==", mes));
+            unsubs.push(onSnapshot(qE, (snap) => {
+                let h = '', total = 0;
+                snap.forEach(d => {
+                    total += d.data().valor;
+                    h += `<div>+ € ${d.data().valor.toFixed(2)} <button onclick="remover('extras','${d.id}')">✕</button></div>`;
+                });
+                document.getElementById('lista-extras').innerHTML = h;
+                window.totalE = total;
                 calcularTudo();
-            });
+            }));
 
-            // Ouvir Gastos
-            onSnapshot(collection(db, "gastos"), (snap) => {
-                let html = ''; let totalG = 0;
-                snap.forEach(docSnap => {
-                    const d = docSnap.data();
-                    totalG += d.val;
-                    html += `
-                    <div class="flex justify-between bg-gray-700 p-3 rounded-lg text-sm items-center">
-                        <span class="text-gray-300">${d.desc}</span>
-                        <div class="flex gap-4 items-center">
-                            <span class="font-mono font-bold">€ ${d.val.toFixed(2)}</span>
-                            <button onclick="removerItem('gastos', '${docSnap.id}')" class="text-gray-500">✕</button>
-                        </div>
+            // Gastos
+            const qG = query(collection(db, "gastos"), where("mesRef", "==", mes));
+            unsubs.push(onSnapshot(qG, (snap) => {
+                let h = '', total = 0;
+                snap.forEach(d => {
+                    total += d.data().val;
+                    h += `<div class="bg-gray-700 p-2 rounded flex justify-between text-sm">
+                        <span>${d.data().desc}</span>
+                        <div class="flex gap-3"><span>€ ${d.data().val.toFixed(2)}</span><button onclick="remover('gastos','${d.id}')">✕</button></div>
                     </div>`;
                 });
-                document.getElementById('lista-gastos').innerHTML = html || '<p class="text-center text-gray-600 py-2">Sem gastos.</p>';
-                window.totalGastos = totalG;
+                document.getElementById('lista-gastos').innerHTML = h;
+                window.totalG = total;
                 calcularTudo();
-            });
+            }));
         }
+
+        window.remover = async (col, id) => { if(confirm("Apagar?")) await deleteDoc(doc(db, col, id)); };
+
+        window.atualizarVH = () => {
+            localStorage.setItem('vh', document.getElementById('cfg-vh').value);
+            trocarMes();
+        };
 
         function calcularTudo() {
             const gamil = parseFloat(document.getElementById('in-gamil').value) || 0;
             const volei = parseFloat(document.getElementById('in-volei').value) || 0;
-            const pearson = window.totalPearson || 0;
-            const extras = window.totalExtras || 0;
-            const gastos = window.totalGastos || 0;
+            const p = window.totalP || 0;
+            const e = window.totalE || 0;
+            const g = window.totalG || 0;
 
-            const bruto = gamil + volei + pearson + extras;
+            const bruto = gamil + volei + p + e;
             const dizimo = bruto * 0.10;
-            const liquido = bruto - dizimo - gastos;
+            const liq = bruto - dizimo - g;
 
             document.getElementById('res-bruto').innerText = `€ ${bruto.toFixed(2)}`;
             document.getElementById('res-dizimo').innerText = `€ ${dizimo.toFixed(2)}`;
-            document.getElementById('res-liquido').innerText = `€ ${liquido.toFixed(2)}`;
+            document.getElementById('res-liquido').innerText = `€ ${liq.toFixed(2)}`;
         }
-
-        // Listeners para inputs de texto direto
-        document.getElementById('in-gamil').addEventListener('input', calcularTudo);
-        document.getElementById('in-volei').addEventListener('input', calcularTudo);
-
     </script>
 </body>
 </html>
