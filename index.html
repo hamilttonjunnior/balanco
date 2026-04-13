@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro Hamilton</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-content { display: none; }
+        .active { display: block; }
+        .tab-btn.active-btn { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+    <div id="login-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700 w-80">
+            <h2 class="text-xl font-bold mb-4 text-center">Acesso Privado</h2>
+            <input type="password" id="senha" class="w-full p-2 bg-gray-700 rounded mb-4" placeholder="Sua senha...">
+            <button onclick="login()" class="w-full bg-blue-600 py-2 rounded font-bold hover:bg-blue-500">Entrar</button>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden max-w-lg mx-auto p-4 pb-24">
+        <header class="py-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-400">Ponto & Finanças</h1>
+            <div id="valor-hora-display" class="text-xs bg-gray-800 p-2 rounded">Valor/Hora: €<span id="vh-val">0</span></div>
+        </header>
+
+        <nav class="flex justify-between border-b border-gray-700 mb-6 text-sm">
+            <button onclick="showTab('pearson')" class="tab-btn active-btn pb-2 px-2">Pearson</button>
+            <button onclick="showTab('rendas')" class="tab-btn pb-2 px-2">Rendas</button>
+            <button onclick="showTab('gastos')" class="tab-btn pb-2 px-2">Gastos</button>
+            <button onclick="showTab('resumo')" class="tab-btn pb-2 px-2">Total</button>
+        </nav>
+
+        <section id="pearson" class="tab-content active">
+            <div class="bg-gray-800 p-4 rounded-lg shadow mb-4">
+                <h3 class="font-bold mb-3">Registrar Horas</h3>
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <input type="date" id="p-data" class="bg-gray-700 p-2 rounded text-sm">
+                    <input type="number" id="p-horas" placeholder="Horas" class="bg-gray-700 p-2 rounded text-sm">
+                </div>
+                <button onclick="salvarPearson()" class="w-full bg-green-600 py-2 rounded font-bold">Salvar na Pearson</button>
+            </div>
+            <div id="lista-ponto" class="space-y-2"></div>
+        </section>
+
+        <section id="rendas" class="tab-content">
+            <div class="bg-gray-800 p-4 rounded-lg space-y-4">
+                <div>
+                    <label class="text-xs text-gray-400">Valor/Hora Pearson (€)</label>
+                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="w-full bg-gray-700 p-2 rounded">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Gamil Mensal (€)</label>
+                    <input type="number" id="in-gamil" class="w-full bg-gray-700 p-2 rounded">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Vôlei (€)</label>
+                    <input type="number" id="in-volei" class="w-full bg-gray-700 p-2 rounded">
+                </div>
+                <div class="border-t border-gray-700 pt-4">
+                    <label class="text-xs text-gray-400 italic">Extras (Dê um + para cada entrada)</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="in-extra" class="flex-1 bg-gray-700 p-2 rounded" placeholder="Valor extra">
+                        <button onclick="addExtra()" class="bg-blue-600 px-4 rounded font-bold">+</button>
+                    </div>
+                    <div id="lista-extras" class="mt-2 text-xs text-blue-300"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gastos" class="tab-content">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="g-desc" placeholder="Ex: Aluguel" class="flex-1 bg-gray-700 p-2 rounded">
+                    <input type="number" id="g-val" placeholder="€" class="w-20 bg-gray-700 p-2 rounded">
+                    <button onclick="addGasto()" class="bg-red-600 px-3 rounded">Add</button>
+                </div>
+                <div id="lista-gastos" class="space-y-2"></div>
+            </div>
+        </section>
+
+        <section id="resumo" class="tab-content">
+            <div class="grid grid-cols-1 gap-3">
+                <div class="bg-gray-800 p-4 rounded-lg border-l-4 border-blue-500">
+                    <p class="text-xs text-gray-400 uppercase">Total Bruto</p>
+                    <h2 id="res-bruto" class="text-3xl font-bold">€ 0.00</h2>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg border-l-4 border-yellow-500">
+                    <p class="text-xs text-gray-400 uppercase">Dízimo (10%)</p>
+                    <h2 id="res-dizimo" class="text-2xl font-bold text-yellow-500">€ 0.00</h2>
+                </div>
+                <div class="bg-green-900 p-4 rounded-lg">
+                    <p class="text-xs text-green-300 uppercase">Saldo Real (Líquido)</p>
+                    <h2 id="res-liquido" class="text-3xl font-bold">€ 0.00</h2>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7nFxZzTDpLLGZZPmey_kt5Y_AYrWBgt8",
+            authDomain: "balanco-3160d.firebaseapp.com",
+            projectId: "balanco-3160d",
+            storageBucket: "balanco-3160d.firebasestorage.app",
+            messagingSenderId: "191125931303",
+            appId: "1:191125931303:web:4b1615a83d648c96151502"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // --- LÓGICA DE INTERFACE ---
+        window.login = () => {
+            if(document.getElementById('senha').value === 'hamilton2026') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                carregarDados();
+            }
+        };
+
+        window.showTab = (tab) => {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-btn'));
+            document.getElementById(tab).classList.add('active');
+            event.currentTarget.classList.add('active-btn');
+            calcularTudo();
+        };
+
+        // --- LÓGICA DE DADOS ---
+        window.salvarPearson = async () => {
+            const data = document.getElementById('p-data').value;
+            const horas = parseFloat(document.getElementById('p-horas').value);
+            if(!data || !horas) return alert("Preencha tudo!");
+
+            const dia = new Date(data).getUTCDate();
+            const quinzena = (dia >= 11 && dia <= 25) ? "Q25" : "Q10";
+
+            await addDoc(collection(db, "pearson"), { data, horas, quinzena, createdAt: new Date() });
+            document.getElementById('p-horas').value = '';
+        };
+
+        window.addExtra = async () => {
+            const valor = parseFloat(document.getElementById('in-extra').value);
+            if(valor) {
+                await addDoc(collection(db, "extras"), { valor, data: new Date() });
+                document.getElementById('in-extra').value = '';
+            }
+        };
+
+        window.addGasto = async () => {
+            const desc = document.getElementById('g-desc').value;
+            const val = parseFloat(document.getElementById('g-val').value);
+            if(desc && val) {
+                await addDoc(collection(db, "gastos"), { desc, val });
+                document.getElementById('g-desc').value = '';
+                document.getElementById('g-val').value = '';
+            }
+        };
+
+        window.atualizarVH = () => {
+            const v = document.getElementById('cfg-vh').value;
+            localStorage.setItem('vh', v);
+            document.getElementById('vh-val').innerText = v;
+            calcularTudo();
+        };
+
+        // --- REAL-TIME E CÁLCULOS ---
+        function carregarDados() {
+            const vhSalvo = localStorage.getItem('vh') || 10;
+            document.getElementById('cfg-vh').value = vhSalvo;
+            document.getElementById('vh-val').innerText = vhSalvo;
+
+            // Escutar Pearson
+            onSnapshot(query(collection(db, "pearson"), orderBy("data", "desc")), (snap) => {
+                let html = '';
+                let totalH = 0;
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    totalH += d.horas;
+                    html += `<div class="bg-gray-800 p-2 rounded flex justify-between text-sm border-l-2 ${d.quinzena=='Q25'?'border-purple-500':'border-orange-500'}">
+                        <span>${d.data} (${d.quinzena})</span>
+                        <span class="font-bold">${d.horas}h</span>
+                    </div>`;
+                });
+                document.getElementById('lista-ponto').innerHTML = html;
+                window.totalPearson = totalH * parseFloat(localStorage.getItem('vh'));
+                calcularTudo();
+            });
+
+            // Escutar Extras
+            onSnapshot(collection(db, "extras"), (snap) => {
+                let totalEx = 0;
+                snap.forEach(d => totalEx += d.data().valor);
+                document.getElementById('lista-extras').innerText = `Total acumulado em extras: €${totalEx.toFixed(2)}`;
+                window.totalExtras = totalEx;
+                calcularTudo();
+            });
+
+            // Escutar Gastos
+            onSnapshot(collection(db, "gastos"), (snap) => {
+                let html = ''; let totalG = 0;
+                snap.forEach(d => {
+                    totalG += d.data().val;
+                    html += `<div class="flex justify-between bg-gray-700 p-2 rounded text-sm">
+                        <span>${d.data().desc}</span><span>€${d.data().val}</span>
+                    </div>`;
+                });
+                document.getElementById('lista-gastos').innerHTML = html;
+                window.totalGastos = totalG;
+                calcularTudo();
+            });
+        }
+
+        function calcularTudo() {
+            const gamil = parseFloat(document.getElementById('in-gamil').value) || 0;
+            const volei = parseFloat(document.getElementById('in-volei').value) || 0;
+            const pearson = window.totalPearson || 0;
+            const extras = window.totalExtras || 0;
+            const gastos = window.totalGastos || 0;
+
+            const bruto = gamil + volei + pearson + extras;
+            const dizimo = bruto * 0.10;
+            const liquido = bruto - dizimo - gastos;
+
+            document.getElementById('res-bruto').innerText = `€ ${bruto.toFixed(2)}`;
+            document.getElementById('res-dizimo').innerText = `€ ${dizimo.toFixed(2)}`;
+            document.getElementById('res-liquido').innerText = `€ ${liquido.toFixed(2)}`;
+        }
+        
+        // Listener para atualizar cálculos ao digitar gamil/volei
+        document.getElementById('in-gamil').addEventListener('input', calcularTudo);
+        document.getElementById('in-volei').addEventListener('input', calcularTudo);
+    </script>
+</body>
+</html>
