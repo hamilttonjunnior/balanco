@@ -2,51 +2,53 @@
 <html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hamilton - Gestão Financeira v8</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hamilton - Gestão 360º Mobile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .tab-content { display: none; }
         .active { display: block; }
         .tab-btn.active-btn { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: bold; }
+        /* Ajuste para inputs no iOS */
+        input { font-size: 16px !important; } 
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans overflow-x-hidden">
 
-    <div id="login-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
-        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 w-80 text-center">
-            <h2 class="text-xl font-bold mb-6 text-blue-400">Hamilton Junior</h2>
-            <input type="password" id="senha" class="w-full p-3 bg-slate-700 rounded-lg mb-4 text-center border border-slate-600 outline-none font-mono" placeholder="Senha">
-            <button onclick="login()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg text-white font-bold uppercase tracking-widest">Entrar</button>
+    <div id="login-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 p-6 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-sm text-center">
+            <h2 class="text-xl font-bold mb-6 text-blue-400 uppercase tracking-widest">Hamilton Junior</h2>
+            <input type="password" id="senha" class="w-full p-4 bg-slate-700 rounded-xl mb-4 text-center border border-slate-600 outline-none font-mono" placeholder="Senha">
+            <button onclick="login()" class="w-full bg-blue-600 py-4 rounded-xl font-bold hover:bg-blue-500 transition shadow-lg text-white uppercase tracking-widest">Entrar</button>
         </div>
     </div>
 
-    <div id="main-content" class="hidden max-w-xl mx-auto p-4 pb-24">
+    <div id="main-content" class="hidden max-w-2xl mx-auto p-4 pb-28">
         
         <header class="py-4 border-b border-slate-800 sticky top-0 bg-slate-900 z-10">
-            <div class="flex justify-between items-center mb-4">
-                <h1 class="text-xl font-bold text-blue-400 uppercase tracking-tighter">Financeiro 360º</h1>
-                <input type="month" id="filtro-mes" onchange="trocarMes()" class="bg-slate-800 p-2 rounded-lg text-sm font-bold border border-slate-700 outline-none">
+            <div class="flex flex-row justify-between items-center mb-4 gap-2">
+                <h1 class="text-lg font-bold text-blue-400 uppercase leading-none">Extrato<br><span class="text-[10px] text-slate-500 font-normal">Hamilton v9</span></h1>
+                <input type="month" id="filtro-mes" onchange="trocarMes()" class="bg-slate-800 p-2 rounded-lg text-sm font-bold border border-slate-700 outline-none text-white">
             </div>
             
-            <div class="grid grid-cols-3 gap-2 text-center">
-                <div class="bg-slate-800 p-2 rounded-lg border-b-2 border-emerald-500">
-                    <p class="text-[8px] uppercase text-slate-400">Entradas Mês</p>
-                    <p id="top-ganhos" class="text-xs font-mono font-bold text-emerald-400">0,00 €</p>
+            <div class="grid grid-cols-3 gap-2">
+                <div class="bg-slate-800 p-3 rounded-xl border-b-2 border-emerald-500 shadow-sm">
+                    <p class="text-[7px] uppercase text-slate-400 font-bold">Entradas</p>
+                    <p id="top-ganhos" class="text-[10px] sm:text-xs font-mono font-bold text-emerald-400">0,00 €</p>
                 </div>
-                <div class="bg-slate-800 p-2 rounded-lg border-b-2 border-red-500">
-                    <p class="text-[8px] uppercase text-slate-400">Saídas Mês</p>
-                    <p id="top-gastos" class="text-xs font-mono font-bold text-red-400">0,00 €</p>
+                <div class="bg-slate-800 p-3 rounded-xl border-b-2 border-red-500 shadow-sm">
+                    <p class="text-[7px] uppercase text-slate-400 font-bold">Saídas</p>
+                    <p id="top-gastos" class="text-[10px] sm:text-xs font-mono font-bold text-red-400">0,00 €</p>
                 </div>
-                <div id="top-card-saldo" class="bg-slate-800 p-2 rounded-lg border-b-2 transition-all">
-                    <p class="text-[8px] uppercase text-slate-400">Saldo Geral</p>
-                    <p id="top-saldo" class="text-xs font-mono font-bold">0,00 €</p>
+                <div id="top-card-saldo" class="bg-slate-800 p-3 rounded-xl border-b-2 transition-all shadow-sm">
+                    <p class="text-[7px] uppercase text-slate-400 font-bold">Saldo Geral</p>
+                    <p id="top-saldo" class="text-[10px] sm:text-xs font-mono font-bold">0,00 €</p>
                 </div>
             </div>
         </header>
 
-        <nav class="flex justify-between border-b border-slate-700 my-6 text-[10px] uppercase font-bold tracking-widest overflow-x-auto gap-4">
+        <nav class="flex justify-between border-b border-slate-700 my-6 text-[9px] sm:text-[10px] uppercase font-bold tracking-widest overflow-x-auto gap-2 scrollbar-hide">
             <button onclick="showTab('pearson')" class="tab-btn active-btn pb-2 px-1 whitespace-nowrap">Pearson</button>
             <button onclick="showTab('rendas')" class="tab-btn pb-2 px-1 whitespace-nowrap">Entradas</button>
             <button onclick="showTab('gastos')" class="tab-btn pb-2 px-1 whitespace-nowrap">Saídas</button>
@@ -54,47 +56,41 @@
             <button onclick="showTab('anual')" class="tab-btn pb-2 px-1 whitespace-nowrap text-yellow-500">Anual</button>
         </nav>
 
-        <section id="pearson" class="tab-content active">
-            <div class="bg-slate-800 p-5 rounded-2xl mb-6 border border-slate-700">
-                <div class="grid grid-cols-2 gap-3 mb-4 text-xs font-bold uppercase tracking-widest">
+        <section id="pearson" class="tab-content active animate-in fade-in duration-300">
+            <div class="bg-slate-800 p-5 rounded-2xl mb-6 border border-slate-700 shadow-xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-slate-400 mb-2">Data Trabalho</label>
-                        <input type="date" id="p-data" class="bg-slate-700 p-2 rounded-lg w-full border border-slate-600 outline-none">
+                        <label class="block text-[10px] uppercase text-slate-400 mb-1 font-bold">Data Trabalho</label>
+                        <input type="date" id="p-data" class="bg-slate-700 p-3 rounded-xl w-full border border-slate-600 outline-none text-white">
                     </div>
                     <div>
-                        <label class="block text-slate-400 mb-2">Horas</label>
-                        <input type="number" id="p-horas" step="0.5" class="bg-slate-700 p-2 rounded-lg w-full border border-slate-600 outline-none font-mono">
+                        <label class="block text-[10px] uppercase text-slate-400 mb-1 font-bold">Horas</label>
+                        <input type="number" id="p-horas" step="0.5" placeholder="ex: 6.5" class="bg-slate-700 p-3 rounded-xl w-full border border-slate-600 outline-none font-mono">
                     </div>
                 </div>
-                <button onclick="salvarPearson()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg">Registar Ponto</button>
+                <button onclick="salvarPearson()" class="w-full bg-blue-600 py-4 rounded-xl font-bold hover:bg-blue-500 transition shadow-lg uppercase text-xs">Lançar no Ponto</button>
             </div>
             <div id="lista-ponto" class="space-y-3"></div>
         </section>
 
         <section id="rendas" class="tab-content">
-            <div class="bg-slate-800 p-5 rounded-2xl space-y-6 border border-slate-700 shadow-xl">
+            <div class="bg-slate-800 p-5 rounded-2xl space-y-6 border border-slate-700">
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[10px] uppercase text-slate-400 font-bold">Gamil</label>
-                        <input type="number" id="in-gamil" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-blue-400 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-[10px] uppercase text-slate-400 font-bold">Vôlei</label>
-                        <input type="number" id="in-volei" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-orange-400 outline-none">
-                    </div>
+                    <div><label class="text-[10px] uppercase text-slate-400 font-bold">Gamil</label><input type="number" id="in-gamil" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-xl border border-slate-600 font-mono text-blue-400 outline-none"></div>
+                    <div><label class="text-[10px] uppercase text-slate-400 font-bold">Vôlei</label><input type="number" id="in-volei" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-xl border border-slate-600 font-mono text-orange-400 outline-none"></div>
                 </div>
                 <div class="border-t border-slate-700 pt-4">
-                    <label class="text-[10px] uppercase block mb-2 font-bold text-green-400">Ganhos Extras (+)</label>
-                    <input type="text" id="extra-desc" placeholder="Descrição do extra" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 mb-2 text-sm outline-none">
+                    <label class="text-[10px] uppercase block mb-3 font-bold text-green-400 tracking-widest">Ganhos Extras</label>
+                    <input type="text" id="extra-desc" placeholder="O que foi? (ex: Edição)" class="w-full bg-slate-700 p-3 rounded-xl border border-slate-600 mb-3 text-sm outline-none">
                     <div class="flex gap-2">
-                        <input type="number" id="extra-val" class="flex-1 bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono outline-none" placeholder="Valor €">
-                        <button onclick="addExtra()" class="bg-green-600 px-6 rounded-lg font-bold">+</button>
+                        <input type="number" id="extra-val" class="flex-1 bg-slate-700 p-3 rounded-xl border border-slate-600 font-mono outline-none" placeholder="Valor €">
+                        <button onclick="addExtra()" class="bg-green-600 px-6 rounded-xl font-bold">+</button>
                     </div>
                     <div id="lista-extras" class="mt-4 space-y-2"></div>
                 </div>
-                <div class="border-t border-slate-700 pt-4">
-                    <label class="text-[10px] uppercase text-slate-500 block mb-1">Preço Hora Pearson</label>
-                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="bg-transparent border-none text-green-400 font-bold text-xl w-full text-center" step="0.01">
+                <div class="border-t border-slate-700 pt-4 text-center">
+                    <label class="text-[10px] uppercase text-slate-500 block mb-1 font-bold">Valor Hora Pearson</label>
+                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="bg-transparent border-none text-green-400 font-bold text-2xl w-full text-center outline-none" step="0.01">
                 </div>
             </div>
         </section>
@@ -102,33 +98,33 @@
         <section id="gastos" class="tab-content">
             <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
                 <div class="flex flex-col gap-3 mb-6">
-                    <input type="text" id="g-desc" placeholder="Descrição da Despesa" class="bg-slate-700 p-3 rounded-lg border border-slate-600 text-sm outline-none">
+                    <input type="text" id="g-desc" placeholder="Nome da Despesa" class="bg-slate-700 p-4 rounded-xl border border-slate-600 text-sm outline-none">
                     <div class="flex gap-2">
-                        <input type="number" id="g-val" placeholder="Valor €" class="flex-1 bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono outline-none">
-                        <button onclick="addGasto()" class="bg-red-600 px-6 rounded-lg font-bold">Add</button>
+                        <input type="number" id="g-val" placeholder="Valor €" class="flex-1 bg-slate-700 p-4 rounded-xl border border-slate-600 font-mono outline-none">
+                        <button onclick="addGasto()" class="bg-red-600 px-6 rounded-xl font-bold hover:bg-red-500 transition shadow-lg">Add</button>
                     </div>
                 </div>
-                <div id="lista-gastos" class="space-y-2"></div>
+                <div id="lista-gastos" class="space-y-3"></div>
             </div>
         </section>
 
         <section id="resumo" class="tab-content">
             <div class="space-y-4">
                 <div class="bg-slate-800 p-6 rounded-2xl border-l-8 border-blue-500 shadow-lg">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Bruto Recebido Mês</p>
-                    <h2 id="res-bruto" class="text-4xl font-mono font-bold mt-2">0,00 €</h2>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold">Total Recebido (Bruto)</p>
+                    <h2 id="res-bruto" class="text-3xl font-mono font-bold mt-1 text-white">0,00 €</h2>
                 </div>
                 <div class="bg-slate-800 p-6 rounded-2xl border-l-8 border-yellow-500 shadow-lg">
-                    <p class="text-[10px] text-yellow-500 uppercase font-bold tracking-widest">Dízimo (10%)</p>
-                    <h2 id="res-dizimo" class="text-3xl font-mono font-bold mt-2 text-yellow-500">0,00 €</h2>
+                    <p class="text-[10px] text-yellow-500 uppercase font-bold">Reserva Dízimo (10%)</p>
+                    <h2 id="res-dizimo" class="text-3xl font-mono font-bold mt-1 text-yellow-500">0,00 €</h2>
                 </div>
-                <div id="card-liq-detalhe" class="p-6 rounded-2xl border-l-8 shadow-xl transition-all duration-500">
-                    <p class="text-[10px] uppercase font-bold tracking-widest">Saldo Líquido (Mês)</p>
-                    <h2 id="res-liquido" class="text-4xl font-mono font-bold mt-2">0,00 €</h2>
+                <div id="card-liq-detalhe" class="p-6 rounded-2xl border-l-8 shadow-xl transition-all">
+                    <p class="text-[10px] uppercase font-bold text-slate-300">Saldo Líquido Mensal</p>
+                    <h2 id="res-liquido" class="text-3xl font-mono font-bold mt-1">0,00 €</h2>
                 </div>
-                <div class="bg-slate-800 p-4 rounded-xl border-l-8 border-slate-600 opacity-60">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest text-left">Trânsito Acumulado Anterior</p>
-                    <h2 id="res-anterior" class="text-xl font-mono font-bold mt-2 text-left">0,00 €</h2>
+                <div class="bg-slate-800/50 p-4 rounded-xl border-l-4 border-slate-600">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold">Saldo Anterior Acumulado</p>
+                    <h2 id="res-anterior" class="text-lg font-mono font-bold mt-1 text-slate-300">0,00 €</h2>
                 </div>
             </div>
         </section>
@@ -154,6 +150,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // --- SISTEMA DE ACESSO ---
         window.login = () => {
             if(document.getElementById('senha').value === 'hamilton2026') {
                 document.getElementById('login-screen').classList.add('hidden');
@@ -161,7 +158,7 @@
                 const agora = new Date();
                 document.getElementById('filtro-mes').value = agora.toISOString().substring(0, 7);
                 trocarMes();
-            }
+            } else { alert("Senha incorreta!"); }
         };
 
         window.showTab = (tabId) => {
@@ -182,43 +179,38 @@
 
         const fmt = (v) => new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(v);
 
+        // --- SALDO ACUMULATIVO ---
         async function calcularSaldoAcumulado(mesFiltro) {
             const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
-            let brutoAcumulado = 0;
-            let gastosAcumulados = 0;
+            let brutoTotal = 0; let gastosTotal = 0;
 
             const rS = await getDocs(collection(db, "rendas_fixas"));
-            rS.forEach(d => { if(d.id < mesFiltro) brutoAcumulado += (d.data().gamil + d.data().volei); });
+            rS.forEach(d => { if(d.id < mesFiltro) brutoTotal += (d.data().gamil + d.data().volei); });
 
             const pS = await getDocs(collection(db, "pearson"));
-            pS.forEach(d => { if(d.data().mesRef < mesFiltro) brutoAcumulado += (d.data().horas * vh); });
+            pS.forEach(d => { if(d.data().mesRef < mesFiltro) brutoTotal += (d.data().horas * vh); });
 
             const eS = await getDocs(collection(db, "extras"));
-            eS.forEach(d => { if(d.data().mesRef < mesFiltro) brutoAcumulado += d.data().valor; });
+            eS.forEach(d => { if(d.data().mesRef < mesFiltro) brutoTotal += d.data().valor; });
 
             const gS = await getDocs(collection(db, "gastos"));
-            gS.forEach(d => { if(d.data().mesRef < mesFiltro) gastosAcumulados += d.data().val; });
+            gS.forEach(d => { if(d.data().mesRef < mesFiltro) gastosTotal += d.data().val; });
 
-            window.saldoAnterior = (brutoAcumulado * 0.90) - gastosAcumulados;
+            window.saldoAnterior = (brutoTotal * 0.90) - gastosTotal;
             document.getElementById('res-anterior').innerText = fmt(window.saldoAnterior);
         }
 
+        // --- CRUD DATA ---
         window.salvarPearson = async () => {
             const dStr = document.getElementById('p-data').value;
             const h = parseFloat(document.getElementById('p-horas').value);
-            if(!dStr || isNaN(h)) return;
-            const d = new Date(dStr);
-            const dia = d.getUTCDate();
+            if(!dStr || isNaN(h)) return alert("Preencha data e horas.");
+            const d = new Date(dStr); const dia = d.getUTCDate();
             let mR = d.getUTCMonth(); let aR = d.getUTCFullYear();
-            let previsao = (dia >= 11 && dia <= 25) ? "Recebe Dia 10" : "Recebe Dia 25";
-            
-            if (dia >= 11) mR += 1;
-            if (mR > 11) { mR = 0; aR += 1; }
+            let prev = (dia >= 11 && dia <= 25) ? "Recebe Dia 10" : "Recebe Dia 25";
+            if (dia >= 11) mR += 1; if (mR > 11) { mR = 0; aR += 1; }
             const mesRef = `${aR}-${String(mR + 1).padStart(2, '0')}`;
-            
-            await addDoc(collection(db, "pearson"), { 
-                dataTrab: dStr, horas: h, mesRef, previsao, ano: String(aR) 
-            });
+            await addDoc(collection(db, "pearson"), { dataTrab: dStr, horas: h, mesRef, previsao: prev, ano: String(aR) });
             document.getElementById('p-horas').value = '';
         };
 
@@ -234,25 +226,24 @@
             const mes = document.getElementById('filtro-mes').value;
             const desc = document.getElementById('extra-desc').value || "Extra";
             const val = parseFloat(document.getElementById('extra-val').value);
-            if(isNaN(val)) return;
+            if(isNaN(val)) return alert("Coloque um valor.");
             await addDoc(collection(db, "extras"), { desc, valor: val, mesRef: mes, ano: mes.substring(0,4) });
-            document.getElementById('extra-desc').value = '';
-            document.getElementById('extra-val').value = '';
+            document.getElementById('extra-desc').value = ''; document.getElementById('extra-val').value = '';
         };
 
         window.addGasto = async () => {
             const mes = document.getElementById('filtro-mes').value;
             const desc = document.getElementById('g-desc').value;
             const val = parseFloat(document.getElementById('g-val').value);
-            if(desc && !isNaN(val)) {
-                await addDoc(collection(db, "gastos"), { desc, val, mesRef: mes, ano: mes.substring(0,4) });
-                document.getElementById('g-desc').value = ''; document.getElementById('g-val').value = '';
-            }
+            if(!desc || isNaN(val)) return alert("Falta descrição ou valor!");
+            await addDoc(collection(db, "gastos"), { desc, val, mesRef: mes, ano: mes.substring(0,4) });
+            document.getElementById('g-desc').value = ''; document.getElementById('g-val').value = '';
         };
 
-        window.remover = async (col, id) => { if(confirm("Apagar?")) await deleteDoc(doc(db, col, id)); };
+        window.remover = async (col, id) => { if(confirm("Apagar registo?")) await deleteDoc(doc(db, col, id)); };
         window.atualizarVH = () => { localStorage.setItem('vh', document.getElementById('cfg-vh').value); trocarMes(); };
 
+        // --- REAL-TIME ENGINE ---
         function carregarDados(mes) {
             const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
             document.getElementById('cfg-vh').value = vh;
@@ -267,54 +258,61 @@
                 let html = '', total = 0;
                 snap.forEach(d => { 
                     const data = d.data(); const sub = data.horas * vh; total += sub;
-                    html += `<div class="bg-slate-800 p-3 rounded-xl flex justify-between border-l-4 border-blue-500">
-                        <div class="text-[10px]"><span class="block text-slate-500">${data.dataTrab}</span><span class="font-bold">${data.horas}h - ${data.previsao}</span></div>
-                        <div class="flex gap-3 items-center font-mono text-emerald-400 font-bold">${fmt(sub)} <button onclick="remover('pearson','${d.id}')" class="text-slate-600">✕</button></div>
+                    html += `<div class="bg-slate-800 p-4 rounded-xl flex justify-between items-center border border-slate-700 shadow-sm">
+                        <div class="text-[10px]"><span class="block text-slate-500 uppercase font-bold tracking-tighter">${data.dataTrab}</span><span class="text-xs font-bold">${data.horas}h - ${data.previsao}</span></div>
+                        <div class="flex gap-4 items-center font-mono text-emerald-400 font-bold">${fmt(sub)} <button onclick="remover('pearson','${d.id}')" class="text-slate-600 p-2">✕</button></div>
                     </div>`;
                 });
-                document.getElementById('lista-ponto').innerHTML = html; window.totalP = total; calcularTudo();
+                document.getElementById('lista-ponto').innerHTML = html || '<p class="text-center text-slate-600 text-[10px] py-4">Sem ganhos previstos para este mês.</p>';
+                window.totalP = total; calcularTudo();
             }));
 
             unsubs.push(onSnapshot(query(collection(db, "extras"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', total = 0;
-                snap.forEach(d => {
-                    total += d.data().valor;
-                    html += `<div class="bg-slate-800 p-3 rounded-lg flex justify-between text-xs border border-slate-700"><span>${d.data().desc}</span><div class="flex gap-2 font-mono"><span>${fmt(d.data().valor)}</span><button onclick="remover('extras','${d.id}')">✕</button></div></div>`;
-                });
+                snap.forEach(d => { total += d.data().valor; html += `<div class="bg-slate-800 p-3 rounded-lg flex justify-between text-xs border border-slate-700 shadow-sm"><span>${d.data().desc}</span><div class="flex gap-3 font-mono font-bold">${fmt(d.data().valor)}<button onclick="remover('extras','${d.id}')" class="text-slate-600">✕</button></div></div>`; });
                 document.getElementById('lista-extras').innerHTML = html; window.totalE = total; calcularTudo();
             }));
 
             unsubs.push(onSnapshot(query(collection(db, "gastos"), where("mesRef", "==", mes)), (snap) => {
-                let html = '', total = 0;
-                snap.forEach(d => { total += d.data().val; html += `<div class="bg-slate-700/30 p-2 rounded flex justify-between text-xs uppercase font-bold"><span>${d.data().desc}</span><div class="flex gap-3 text-red-400"><span>${fmt(d.data().val)}</span><button onclick="remover('gastos','${d.id}')" class="text-slate-500 font-normal">✕</button></div></div>`; });
-                document.getElementById('lista-gastos').innerHTML = h || html; window.totalG = total; calcularTudo();
+                let htmlList = '', total = 0;
+                snap.forEach(d => { 
+                    const item = d.data(); total += item.val; 
+                    htmlList += `<div class="bg-slate-700/30 p-4 rounded-xl flex justify-between items-center text-xs border border-slate-700">
+                        <span class="font-bold uppercase tracking-widest text-slate-300 text-[9px]">${item.desc}</span>
+                        <div class="flex gap-4 items-center">
+                            <span class="text-red-400 font-mono font-bold">${fmt(item.val)}</span>
+                            <button onclick="remover('gastos','${d.id}')" class="text-slate-500 p-2">✕</button>
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('lista-gastos').innerHTML = htmlList || '<p class="text-center text-slate-600 text-[10px] py-4 uppercase font-bold tracking-widest">Tudo Pago!</p>';
+                window.totalG = total; calcularTudo();
             }));
         }
 
         function calcularTudo() {
             const gamil = parseFloat(document.getElementById('in-gamil').value) || 0;
             const volei = parseFloat(document.getElementById('in-volei').value) || 0;
-            const brutoMes = gamil + volei + (window.totalP || 0) + (window.totalE || 0);
-            const gastosMes = window.totalG || 0;
-            const dizimoMes = brutoMes * 0.10;
-            const liqMes = brutoMes - dizimoMes - gastosMes;
-            const saldoGeral = (window.saldoAnterior || 0) + liqMes;
+            const brutoM = gamil + volei + (window.totalP || 0) + (window.totalE || 0);
+            const gastosM = window.totalG || 0;
+            const dizimoM = brutoM * 0.10;
+            const liqM = brutoM - dizimoM - gastosM;
+            const saldoGeral = (window.saldoAnterior || 0) + liqM;
 
-            document.getElementById('top-ganhos').innerText = fmt(brutoMes);
-            document.getElementById('top-gastos').innerText = fmt(gastosMes);
+            document.getElementById('top-ganhos').innerText = fmt(brutoM);
+            document.getElementById('top-gastos').innerText = fmt(gastosM);
             document.getElementById('top-saldo').innerText = fmt(saldoGeral);
-            document.getElementById('res-bruto').innerText = fmt(brutoMes);
-            document.getElementById('res-dizimo').innerText = fmt(dizimoMes);
-            document.getElementById('res-liquido').innerText = fmt(liqMes);
+            document.getElementById('res-bruto').innerText = fmt(brutoM);
+            document.getElementById('res-dizimo').innerText = fmt(dizimoM);
+            document.getElementById('res-liquido').innerText = fmt(liqM);
 
-            // Cores do Saldo Geral
-            document.getElementById('top-card-saldo').style.borderBottomColor = saldoGeral >= 0 ? "#10b981" : "#ef4444";
+            const cardT = document.getElementById('top-card-saldo');
+            cardT.style.borderBottomColor = saldoGeral >= 0 ? "#10b981" : "#ef4444";
             document.getElementById('top-saldo').style.color = saldoGeral >= 0 ? "#10b981" : "#ef4444";
             
-            // Cores do Balanço Mensal
-            const cardLiq = document.getElementById('card-liq-detalhe');
-            cardLiq.style.borderLeftColor = liqMes >= 0 ? "#10b981" : "#ef4444";
-            cardLiq.style.backgroundColor = liqMes >= 0 ? "rgba(6, 78, 59, 0.4)" : "rgba(127, 29, 29, 0.4)";
+            const cardL = document.getElementById('card-liq-detalhe');
+            cardL.style.borderLeftColor = liqM >= 0 ? "#10b981" : "#ef4444";
+            cardL.style.backgroundColor = liqM >= 0 ? "rgba(6, 78, 59, 0.4)" : "rgba(127, 29, 29, 0.4)";
         }
 
         async function gerarRelatorioAnual() {
@@ -331,15 +329,15 @@
             const tD = tB * 0.10; const tL = tB - tD - tG;
 
             document.getElementById('corpo-anual').innerHTML = `
-                <div class="bg-slate-800 p-6 rounded-2xl border border-yellow-500/30">
-                    <h3 class="text-xl font-bold text-yellow-500 mb-6 uppercase text-xs tracking-widest italic text-center">Consolidado ${ano}</h3>
+                <div class="bg-slate-800 p-6 rounded-2xl border border-yellow-500/30 text-center">
+                    <h3 class="text-sm font-bold text-yellow-500 mb-6 uppercase tracking-widest italic">Consolidado ${ano}</h3>
                     <div class="space-y-4">
-                        <div class="flex justify-between border-b border-slate-700 pb-2"><span>Bruto Anual</span><span class="font-mono text-emerald-400 font-bold">${fmt(tB)}</span></div>
-                        <div class="flex justify-between border-b border-slate-700 pb-2"><span>Reserva Dízimo</span><span class="font-mono text-yellow-500 font-bold">${fmt(tD)}</span></div>
-                        <div class="flex justify-between border-b border-slate-700 pb-2"><span>Despesas Totais</span><span class="font-mono text-red-400 font-bold">${fmt(tG)}</span></div>
-                        <div class="bg-slate-900 p-4 rounded-xl text-center">
-                            <p class="text-[10px] uppercase text-slate-500 mb-1">Acumulado Líquido do Ano</p>
-                            <h2 class="text-3xl font-mono font-bold ${tL >= 0 ? 'text-emerald-400' : 'text-red-400'}">${fmt(tL)}</h2>
+                        <div class="flex justify-between text-xs border-b border-slate-700 pb-2"><span>Bruto Total</span><span class="font-mono text-emerald-400 font-bold">${fmt(tB)}</span></div>
+                        <div class="flex justify-between text-xs border-b border-slate-700 pb-2"><span>Total Dízimo</span><span class="font-mono text-yellow-500 font-bold">${fmt(tD)}</span></div>
+                        <div class="flex justify-between text-xs border-b border-slate-700 pb-2"><span>Total Gastos</span><span class="font-mono text-red-400 font-bold">${fmt(tG)}</span></div>
+                        <div class="p-5 rounded-xl border-l-8 ${tL>=0?'border-emerald-500 bg-emerald-900/30':'border-red-500 bg-red-900/30'} mt-6">
+                            <p class="text-[9px] uppercase font-bold text-slate-300">Lucro Líquido Real</p>
+                            <h2 class="text-2xl font-mono font-bold mt-2">${fmt(tL)}</h2>
                         </div>
                     </div>
                 </div>`;
