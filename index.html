@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hamilton Financeiro - v5</title>
+    <title>Hamilton Financeiro - v6 (Fluxo de Caixa)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .tab-content { display: none; }
@@ -18,31 +18,33 @@
         <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 w-80 text-center">
             <h2 class="text-xl font-bold mb-6 text-blue-400">Hamilton Junior</h2>
             <input type="password" id="senha" class="w-full p-3 bg-slate-700 rounded-lg mb-4 text-center border border-slate-600 outline-none" placeholder="Senha">
-            <button onclick="login()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg">Aceder</button>
+            <button onclick="login()" class="w-full bg-blue-600 py-3 rounded-lg font-bold hover:bg-blue-500 transition shadow-lg">Entrar no Extrato</button>
         </div>
     </div>
 
     <div id="main-content" class="hidden max-w-xl mx-auto p-4 pb-24">
         <header class="py-6 border-b border-slate-800 mb-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-blue-400 leading-tight">Finanças<br><span class="text-xs text-slate-500 uppercase tracking-widest">Controlo 360º</span></h1>
+            <h1 class="text-2xl font-bold text-blue-400 leading-tight">Extrato Real<br><span class="text-xs text-slate-500 uppercase tracking-widest">Disponibilidade de Caixa</span></h1>
             <input type="month" id="filtro-mes" onchange="trocarMes()" class="bg-slate-800 p-2 rounded-lg text-sm font-bold border border-slate-700">
         </header>
 
         <nav class="flex justify-between border-b border-slate-700 mb-6 text-[10px] uppercase font-bold tracking-widest overflow-x-auto gap-4">
             <button onclick="showTab('pearson')" class="tab-btn active-btn pb-2 px-1">Pearson</button>
-            <button onclick="showTab('rendas')" class="tab-btn pb-2 px-1">Entradas</button>
-            <button onclick="showTab('gastos')" class="tab-btn pb-2 px-1">Gastos</button>
+            <button onclick="showTab('rendas')" class="tab-btn pb-2 px-1">Fixos/Extras</button>
+            <button onclick="showTab('gastos')" class="tab-btn pb-2 px-1">Saídas</button>
             <button onclick="showTab('resumo')" class="tab-btn pb-2 px-1">Balanço</button>
             <button onclick="showTab('anual')" class="tab-btn pb-2 px-1 text-yellow-500">Anual</button>
         </nav>
 
         <section id="pearson" class="tab-content active">
             <div class="bg-slate-800 p-5 rounded-2xl mb-6 border border-slate-700">
+                <p class="text-[10px] text-slate-400 mb-2 uppercase">Data que trabalhou:</p>
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     <input type="date" id="p-data" class="bg-slate-700 p-2 rounded-lg text-sm border border-slate-600">
                     <input type="number" id="p-horas" step="0.5" placeholder="Horas" class="bg-slate-700 p-2 rounded-lg text-sm border border-slate-600">
                 </div>
-                <button onclick="salvarPearson()" class="w-full bg-blue-600 py-2 rounded-lg font-bold">Lançar Ponto</button>
+                <button onclick="salvarPearson()" class="w-full bg-blue-600 py-2 rounded-lg font-bold">Lançar no Ponto</button>
+                <p class="text-[9px] text-slate-500 mt-2 italic text-center">*O sistema lançará o valor no mês que o dinheiro cair na sua conta.</p>
             </div>
             <div id="lista-ponto" class="space-y-3"></div>
         </section>
@@ -50,25 +52,25 @@
         <section id="rendas" class="tab-content">
             <div class="bg-slate-800 p-5 rounded-2xl space-y-4 border border-slate-700">
                 <div class="grid grid-cols-2 gap-4">
-                    <div><label class="text-[10px] text-slate-400 uppercase">Gamil</label><input type="number" id="in-gamil" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-blue-400"></div>
-                    <div><label class="text-[10px] text-slate-400 uppercase">Vôlei</label><input type="number" id="in-volei" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-orange-400"></div>
+                    <div><label class="text-[10px] text-slate-400 uppercase">Gamil (Dia 30)</label><input type="number" id="in-gamil" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-blue-400"></div>
+                    <div><label class="text-[10px] text-slate-400 uppercase">Vôlei (Dia 28)</label><input type="number" id="in-volei" onblur="salvarRendaFixa()" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono text-orange-400"></div>
                 </div>
                 <div class="border-t border-slate-700 pt-4">
-                    <label class="text-[10px] text-slate-400 uppercase block mb-2 font-bold">Extras (+)</label>
+                    <label class="text-[10px] text-slate-400 uppercase block mb-2 font-bold">Ganhos Extras (+)</label>
                     <div class="flex gap-2">
                         <input type="number" id="in-extra" class="flex-1 bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono" placeholder="Valor €">
                         <button onclick="addExtra()" class="bg-green-600 px-6 rounded-lg font-bold">+</button>
                     </div>
                     <div id="lista-extras" class="mt-4 p-3 bg-slate-900 rounded-xl text-xs text-blue-300 font-mono space-y-2"></div>
                 </div>
-                <div class="pt-2"><label class="text-[10px] text-slate-400 uppercase block">Valor/Hora Pearson</label><input type="number" id="cfg-vh" onchange="atualizarVH()" class="w-full bg-transparent border-none text-green-400 font-bold text-lg" step="0.01"></div>
+                <div class="pt-2"><label class="text-[10px] text-slate-400 uppercase block">Configurar Preço Hora</label><input type="number" id="cfg-vh" onchange="atualizarVH()" class="w-full bg-transparent border-none text-green-400 font-bold text-lg" step="0.01"></div>
             </div>
         </section>
 
         <section id="gastos" class="tab-content">
             <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
                 <div class="flex flex-col gap-3 mb-6">
-                    <input type="text" id="g-desc" placeholder="Descrição da Despesa" class="bg-slate-700 p-3 rounded-lg border border-slate-600">
+                    <input type="text" id="g-desc" placeholder="O que pagou?" class="bg-slate-700 p-3 rounded-lg border border-slate-600">
                     <div class="flex gap-2">
                         <input type="number" id="g-val" placeholder="Valor €" class="flex-1 bg-slate-700 p-3 rounded-lg border border-slate-600 font-mono">
                         <button onclick="addGasto()" class="bg-red-600 px-6 rounded-lg font-bold">Add</button>
@@ -81,18 +83,18 @@
         <section id="resumo" class="tab-content">
             <div class="space-y-4">
                 <div class="bg-slate-800 p-6 rounded-2xl border-l-8 border-blue-500 shadow-xl">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">Ganhos Brutos</p>
-                    <h2 id="res-bruto" class="text-4xl font-mono font-bold mt-2">0.00 €</h2>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest text-left">Dinheiro que Entra</p>
+                    <h2 id="res-bruto" class="text-4xl font-mono font-bold mt-2 text-left">0.00 €</h2>
                 </div>
                 
                 <div id="card-liquido" class="p-6 rounded-2xl border-l-8 shadow-xl transition-all duration-500 bg-slate-800">
-                    <p class="text-[10px] uppercase font-bold tracking-widest text-slate-300">Saldo Livre (Líquido)</p>
-                    <h2 id="res-liquido" class="text-4xl font-mono font-bold mt-2">0.00 €</h2>
+                    <p class="text-[10px] uppercase font-bold tracking-widest text-slate-300 text-left">Disponível em Caixa</p>
+                    <h2 id="res-liquido" class="text-4xl font-mono font-bold mt-2 text-left">0.00 €</h2>
                 </div>
 
                 <div class="bg-slate-800 p-6 rounded-2xl border-l-8 border-yellow-500 shadow-xl">
-                    <p class="text-[10px] text-yellow-500 uppercase font-bold tracking-widest">Dízimo (10%)</p>
-                    <h2 id="res-dizimo" class="text-3xl font-mono font-bold mt-2 text-yellow-500">0.00 €</h2>
+                    <p class="text-[10px] text-yellow-500 uppercase font-bold tracking-widest text-left">Dízimo (Reserva)</p>
+                    <h2 id="res-dizimo" class="text-3xl font-mono font-bold mt-2 text-yellow-500 text-left">0.00 €</h2>
                 </div>
             </div>
         </section>
@@ -144,14 +146,43 @@
 
         const fmt = (v) => new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(v);
 
-        // FUNÇÕES DE SALVAMENTO
+        // LÓGICA DE DATAS DE RECEBIMENTO (PEARSON)
         window.salvarPearson = async () => {
-            const data = document.getElementById('p-data').value;
+            const dataTrab = document.getElementById('p-data').value;
             const horas = parseFloat(document.getElementById('p-horas').value);
-            if(!data || isNaN(horas)) return alert("Dados inválidos!");
-            const dia = new Date(data).getUTCDate();
-            const previsao = (dia >= 11 && dia <= 25) ? "Recebe Dia 10" : "Recebe Dia 25";
-            await addDoc(collection(db, "pearson"), { data, horas, mesRef: data.substring(0, 7), previsao, ano: data.substring(0, 4) });
+            if(!dataTrab || isNaN(horas)) return alert("Dados inválidos!");
+            
+            const d = new Date(dataTrab);
+            const dia = d.getUTCDate();
+            let mesReceb = d.getUTCMonth(); 
+            let anoReceb = d.getUTCFullYear();
+            let previsao = "";
+
+            if (dia >= 11 && dia <= 25) {
+                // Recebe dia 10 do mês seguinte
+                mesReceb += 1;
+                previsao = "Recebe Dia 10";
+            } else if (dia >= 26) {
+                // Recebe dia 25 do mês seguinte
+                mesReceb += 1;
+                previsao = "Recebe Dia 25";
+            } else {
+                // Se trabalhou até dia 10, recebe dia 25 do próprio mês
+                previsao = "Recebe Dia 25";
+            }
+
+            // Ajuste de virada de ano
+            if(mesReceb > 11) { mesReceb = 0; anoReceb += 1; }
+            
+            const mesRefRecebimento = `${anoReceb}-${String(mesReceb + 1).padStart(2, '0')}`;
+
+            await addDoc(collection(db, "pearson"), { 
+                dataTrabalho: dataTrab, 
+                horas, 
+                mesRef: mesRefRecebimento, // Salva no mês que cai na conta!
+                previsao, 
+                ano: String(anoReceb) 
+            });
             document.getElementById('p-horas').value = '';
         };
 
@@ -181,10 +212,8 @@
         };
 
         window.remover = async (col, id) => { if(confirm("Apagar registo?")) await deleteDoc(doc(db, col, id)); };
-
         window.atualizarVH = () => { localStorage.setItem('vh', document.getElementById('cfg-vh').value); trocarMes(); };
 
-        // CARREGAMENTO REALTIME
         function carregarDados(mes) {
             const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
             document.getElementById('cfg-vh').value = vh;
@@ -200,11 +229,11 @@
                 snap.forEach(d => {
                     const data = d.data(); const sub = data.horas * vh; total += sub;
                     html += `<div class="bg-slate-800 p-3 rounded-xl flex justify-between items-center border border-slate-700 shadow-sm">
-                        <div class="text-[10px] uppercase font-bold text-slate-500">${data.data} <span class="text-blue-400 ml-2">${data.horas}h (${data.previsao})</span></div>
+                        <div class="text-[10px] uppercase font-bold text-slate-500">Trab: ${data.dataTrabalho} <span class="text-blue-400 ml-2">${data.horas}h (${data.previsao})</span></div>
                         <div class="flex gap-4 items-center"><span class="font-mono text-emerald-400 font-bold text-sm">${fmt(sub)}</span><button onclick="remover('pearson','${d.id}')" class="text-slate-600">✕</button></div>
                     </div>`;
                 });
-                document.getElementById('lista-ponto').innerHTML = html || '<p class="text-center text-slate-600 text-[10px]">Sem lançamentos.</p>';
+                document.getElementById('lista-ponto').innerHTML = html || '<p class="text-center text-slate-600 text-[10px]">Nada a receber este mês.</p>';
                 window.totalP = total; calcularTudo();
             }));
 
@@ -243,17 +272,16 @@
             document.getElementById('res-dizimo').innerText = fmt(dizimo);
             document.getElementById('res-liquido').innerText = fmt(liq);
 
-            // LOGICA DE CORES DO SALDO
             const card = document.getElementById('card-liquido');
             const resLiq = document.getElementById('res-liquido');
             if (liq >= 0) {
-                card.style.borderLeftColor = "#10b981"; // Emerald 500
-                resLiq.style.color = "#a7f3d0"; // Emerald 200
-                card.style.backgroundColor = "rgba(6, 78, 59, 0.4)"; // Verde escuro
+                card.style.borderLeftColor = "#10b981";
+                resLiq.style.color = "#a7f3d0";
+                card.style.backgroundColor = "rgba(6, 78, 59, 0.4)";
             } else {
-                card.style.borderLeftColor = "#ef4444"; // Red 500
-                resLiq.style.color = "#fecaca"; // Red 200
-                card.style.backgroundColor = "rgba(127, 29, 29, 0.4)"; // Vermelho escuro
+                card.style.borderLeftColor = "#ef4444";
+                resLiq.style.color = "#fecaca";
+                card.style.backgroundColor = "rgba(127, 29, 29, 0.4)";
             }
         }
 
@@ -268,18 +296,15 @@
             eS.forEach(d => tB += d.data().valor);
             const gS = await getDocs(query(collection(db, "gastos"), where("ano", "==", ano)));
             gS.forEach(d => tG += d.data().val);
-
             const tD = tB * 0.10; const tL = tB - tD - tG;
 
             document.getElementById('corpo-anual').innerHTML = `
-                <div class="bg-slate-800 p-6 rounded-2xl border border-yellow-500/30">
-                    <h3 class="text-xl font-bold text-yellow-500 mb-4 uppercase text-xs tracking-widest text-center italic">Consolidado ${ano}</h3>
+                <div class="bg-slate-800 p-6 rounded-2xl border border-yellow-500/30 text-left">
+                    <h3 class="text-xl font-bold text-yellow-500 mb-4 uppercase text-xs tracking-widest italic">Acumulado ${ano}</h3>
                     <div class="grid grid-cols-1 gap-3">
-                        <div class="bg-slate-900 p-4 rounded-xl flex justify-between items-center"><span class="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Ganhos</span><span class="font-mono text-emerald-400 font-bold">${fmt(tB)}</span></div>
-                        <div class="bg-slate-900 p-4 rounded-xl flex justify-between items-center"><span class="text-[10px] uppercase font-bold text-yellow-500 tracking-widest">Dízimo</span><span class="font-mono text-yellow-500 font-bold">${fmt(tD)}</span></div>
-                        <div class="bg-slate-900 p-4 rounded-xl flex justify-between items-center"><span class="text-[10px] uppercase font-bold text-red-500 tracking-widest">Gastos</span><span class="font-mono text-red-400 font-bold">${fmt(tG)}</span></div>
+                        <div class="bg-slate-900 p-4 rounded-xl flex justify-between items-center"><span class="text-[10px] uppercase font-bold text-slate-500">Total Ganhos</span><span class="font-mono text-emerald-400 font-bold">${fmt(tB)}</span></div>
                         <div class="p-5 rounded-xl border-l-8 ${tL>=0?'border-emerald-500 bg-emerald-900/30':'border-red-500 bg-red-900/30'}">
-                            <p class="text-[10px] uppercase font-bold text-slate-300">Acumulado Líquido</p>
+                            <p class="text-[10px] uppercase font-bold text-slate-300">Saldo Final</p>
                             <h2 class="text-3xl font-mono font-bold mt-2">${fmt(tL)}</h2>
                         </div>
                     </div>
