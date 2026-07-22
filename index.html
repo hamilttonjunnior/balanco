@@ -184,6 +184,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Define o valor hora padrão ajustado para 16.25 caso ainda não exista localmente
+        if (!localStorage.getItem('vh')) {
+            localStorage.setItem('vh', '16.25');
+        }
+
         window.login = function() {
             const senhaInput = document.getElementById('senha');
             const senha = senhaInput.value.trim();
@@ -220,7 +225,7 @@
         const fmt = (v) => new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(v);
 
         async function calcularSaldoAnterior(mesFiltro) {
-            const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
+            const vh = parseFloat(localStorage.getItem('vh')) || 16.25;
             let brutoAcum = 0; let gastosAcum = 0;
             const rS = await getDocs(collection(db, "rendas_fixas"));
             rS.forEach(d => { if(d.id < mesFiltro) brutoAcum += (d.data().gamil + d.data().volei); });
@@ -237,23 +242,43 @@
         window.salvarPearson = async () => {
             const dStr = document.getElementById('p-data').value;
             const h = parseFloat(document.getElementById('p-horas').value);
-            if(!dStr || isNaN(h)) return;
             
-            const partes = dStr.split('-');
-            let ano = parseInt(partes[0]);
-            let mes = parseInt(partes[1]) - 1; 
-            let dia = parseInt(partes[2]);
+            if (!dStr || isNaN(h) || h <= 0) {
+                alert("Por favor, preencha a data e uma quantidade de horas válida.");
+                return;
+            }
+            
+            const [anoStr, mesStr, diaStr] = dStr.split('-');
+            let ano = parseInt(anoStr, 10);
+            let mes = parseInt(mesStr, 10) - 1;
+            let dia = parseInt(diaStr, 10);
             
             let previsao = (dia >= 11 && dia <= 25) ? "Recebe Dia 10" : "Recebe Dia 25";
             
             if (dia >= 11) {
                 mes += 1;
-                if (mes > 11) { mes = 0; ano += 1; }
+                if (mes > 11) { 
+                    mes = 0; 
+                    ano += 1; 
+                }
             }
             
             const mesRef = `${ano}-${String(mes + 1).padStart(2, '0')}`;
-            await addDoc(collection(db, "pearson"), { dataTrab: dStr, horas: h, mesRef, previsao, ano: String(ano) });
-            document.getElementById('p-horas').value = '';
+            
+            try {
+                await addDoc(collection(db, "pearson"), { 
+                    dataTrab: dStr, 
+                    horas: h, 
+                    mesRef: mesRef, 
+                    previsao: previsao, 
+                    ano: String(ano) 
+                });
+                
+                document.getElementById('p-horas').value = '';
+            } catch (error) {
+                console.error("Erro ao salvar ponto:", error);
+                alert("Erro ao gravar o registro no banco de dados.");
+            }
         };
 
         window.salvarRendaFixa = async () => {
@@ -287,7 +312,7 @@
         window.atualizarVH = () => { localStorage.setItem('vh', document.getElementById('cfg-vh').value); trocarMes(); };
 
         function carregarDados(mes) {
-            const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
+            const vh = parseFloat(localStorage.getItem('vh')) || 16.25;
             document.getElementById('cfg-vh').value = vh;
             getDoc(doc(db, "rendas_fixas", mes)).then(s => {
                 document.getElementById('in-gamil').value = s.exists() ? s.data().gamil : 0;
@@ -368,7 +393,7 @@
 
         async function gerarRelatorioAnual() {
             const ano = document.getElementById('filtro-mes').value.substring(0, 4);
-            let tB = 0, tG = 0; const vh = parseFloat(localStorage.getItem('vh')) || 15.75;
+            let tB = 0, tG = 0; const vh = parseFloat(localStorage.getItem('vh')) || 16.25;
             const pS = await getDocs(query(collection(db, "pearson"), where("ano", "==", ano)));
             pS.forEach(d => tB += (d.data().horas * vh));
             const rS = await getDocs(query(collection(db, "rendas_fixas"), where("ano", "==", ano)));
