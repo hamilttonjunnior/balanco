@@ -108,7 +108,7 @@
                 <div id="lista-ponto" class="space-y-2"></div>
             </div>
 
-            <!-- Outras Entradas (Gamil, Foto Cássia, Freelance, Vôlei) -->
+            <!-- Outras Entradas -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Lançar Outros Recebimentos</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -190,14 +190,26 @@
             </div>
         </section>
 
-        <!-- Aba Resumo / Balanço Integrado -->
+        <!-- Aba Resumo / Balanço Integrado (COM OPÇÃO DE DÍZIMO) -->
         <section id="resumo" class="tab-content space-y-3">
+            <!-- Alternador de Dízimo -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center">
+                <div>
+                    <span class="text-xs font-bold text-slate-900 uppercase tracking-wider block">Calcular Dízimo (10%) este mês?</span>
+                    <span class="text-[11px] text-slate-500 font-medium">Escolha se deseja separar a reserva de dízimo no balanço atual</span>
+                </div>
+                <select id="usar-dizimo" onchange="alternarDizimo()" class="bg-slate-50 px-3 py-2 rounded-xl text-xs font-bold border border-slate-200 text-slate-800 outline-none focus:bg-white">
+                    <option value="sim" selected>Sim (10%)</option>
+                    <option value="nao">Não (0%)</option>
+                </select>
+            </div>
+
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Entradas Brutas no Mês (€)</p>
                 <h2 id="res-bruto" class="text-2xl font-mono font-bold mt-1 text-slate-900">0,00 €</h2>
             </div>
             
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div id="card-dizimo-resumo" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <p class="text-[10px] text-amber-600 uppercase font-bold tracking-wider">Reserva Dízimo (10%)</p>
                 <h2 id="res-dizimo" class="text-2xl font-mono font-bold mt-1 text-amber-600">0,00 €</h2>
             </div>
@@ -267,6 +279,10 @@
         };
 
         const fmt = (v) => new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(v || 0);
+
+        window.alternarDizimo = () => {
+            calcularTudo();
+        };
 
         // Salvar Pearson em Euros Diretos
         window.salvarPearsonEUR = async () => {
@@ -385,18 +401,15 @@
                 calcularTudo();
             }));
 
-            // Escutar Pearson (Compatível com formato novo em € e antigo em horas)
+            // Escutar Pearson
             unsubs.push(onSnapshot(query(collection(db, "pearson"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', totalEUR = 0; 
                 snap.forEach(d => { 
                     const data = d.data();
                     let subEUR = data.valorEUR;
-                    
-                    // Fallback caso seja um registo antigo de horas
                     if (subEUR === undefined && data.horas) {
                         subEUR = data.horas * 16.25 * 0.92;
                     }
-                    
                     totalEUR += (subEUR || 0); 
                     
                     html += `<div class="bg-white p-3.5 rounded-xl flex justify-between items-center border border-slate-200 shadow-sm">
@@ -478,7 +491,7 @@
                         html += `<div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs flex justify-between items-center opacity-70">
                             <div>
                                 <span class="font-bold text-slate-700 line-through">${data.desc}</span>
-                                <span class="text-[10px] text-emerald-600 font-bold block">✓ Quitada! All clear</span>
+                                <span class="text-[10px] text-emerald-600 font-bold block"> Quitada! All clear</span>
                             </div>
                             <button onclick="remover('debitos_pendentes','${d.id}')" class="text-slate-300 hover:text-rose-500 text-sm">✕</button>
                         </div>`;
@@ -512,7 +525,9 @@
             
             const despesasTotal = despesasFixas + parcelasMes + despesasVariaveis;
             
-            const dizimo = entradasTotal * 0.10;
+            const aplicarDizimo = document.getElementById('usar-dizimo').value === 'sim';
+            const dizimo = aplicarDizimo ? (entradasTotal * 0.10) : 0;
+            
             const liquido = entradasTotal - dizimo - despesasTotal;
 
             document.getElementById('top-ganhos').innerText = fmt(entradasTotal);
@@ -527,7 +542,7 @@
 
             const elemPoupar = document.getElementById('res-pode-poupar');
             if (liquido > 0) {
-                elemPoupar.innerText = ` Capaz de guardar até ${fmt(liquido)} este mês após dízimo e despesas!`;
+                elemPoupar.innerText = ` Capaz de guardar até ${fmt(liquido)} este mês após despesas${aplicarDizimo ? ' e dízimo' : ''}!`;
             } else {
                 elemPoupar.innerText = ` Déficit de ${fmt(Math.abs(liquido))} para cobrir todos os custos este mês.`;
             }
@@ -544,7 +559,9 @@
             const gS = await getDocs(query(collection(db, "gastos"), where("ano", "==", ano)));
             gS.forEach(d => tG += d.data().val);
             
-            const tD = tB * 0.10; const tL = tB - tD - tG;
+            const aplicarDizimo = document.getElementById('usar-dizimo').value === 'sim';
+            const tD = aplicarDizimo ? (tB * 0.10) : 0; 
+            const tL = tB - tD - tG;
             
             document.getElementById('corpo-anual').innerHTML = `
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
@@ -554,7 +571,7 @@
                         <span class="text-slate-900 font-mono font-bold">${fmt(tB)}</span>
                     </div>
                     <div class="flex justify-between items-center text-xs py-2 border-b border-slate-100">
-                        <span class="text-amber-600 font-medium">Reserva Dízimo (10%)</span>
+                        <span class="text-amber-600 font-medium">Reserva Dízimo</span>
                         <span class="text-amber-600 font-mono font-bold">${fmt(tD)}</span>
                     </div>
                     <div class="flex justify-between items-center text-xs py-2 border-b border-slate-100">
