@@ -79,30 +79,31 @@
 
         <!-- Aba Entradas & Pearson -->
         <section id="entradas" class="tab-content active space-y-6">
-            <!-- Ponto Pearson -->
+            <!-- Pagamentos Pearson em Euros -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Registo Ponto Pearson (USD → EUR)</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Lançar Recebimento Pearson (Quinzena em €)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-[11px] uppercase font-bold text-slate-500 mb-1.5">Data do Trabalho</label>
-                        <input type="date" id="p-data" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 text-slate-800 text-sm outline-none focus:bg-white focus:border-slate-400 transition">
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Quinzena / Lote</label>
+                        <select id="p-lote" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 text-slate-800 text-sm outline-none focus:bg-white">
+                            <option value="Pagamento Dia 10">Pagamento Dia 10</option>
+                            <option value="Pagamento Dia 25">Pagamento Dia 25</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] uppercase font-bold text-slate-500 mb-1.5">Horas Trab.</label>
-                        <input type="number" id="p-horas" step="0.5" placeholder="0.0" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 font-mono text-slate-800 text-sm outline-none focus:bg-white focus:border-slate-400 transition">
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Data de Recebimento</label>
+                        <input type="date" id="p-data" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 text-slate-800 text-sm outline-none focus:bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Valor Recebido (€)</label>
+                        <input type="number" id="p-val" placeholder="0.00" step="0.01" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 font-mono text-slate-800 text-sm outline-none focus:bg-white">
                     </div>
                 </div>
-                <button onclick="salvarPearson()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Horas Pearson</button>
+                <button onclick="salvarPearsonEUR()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Recebimento Pearson</button>
                 
                 <div id="resumo-pearson-mes" class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-                    <div>
-                        <span class="text-slate-400 uppercase font-bold tracking-wider text-[10px] block">Total Pearson (USD)</span>
-                        <span id="pearson-usd" class="font-mono font-bold text-slate-900 text-sm">$0.00 USD</span>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-slate-400 uppercase font-bold tracking-wider text-[10px] block">Convertido (EUR)</span>
-                        <span id="pearson-eur" class="font-mono font-bold text-emerald-600 text-sm">0,00 €</span>
-                    </div>
+                    <span class="text-slate-500 uppercase font-bold tracking-wider text-[10px]">Total Recebido Pearson no Mês</span>
+                    <span id="pearson-eur" class="font-mono font-bold text-emerald-600 text-base">0,00 €</span>
                 </div>
                 <div id="lista-ponto" class="space-y-2"></div>
             </div>
@@ -133,18 +134,6 @@
                 <button onclick="salvarRendaFixa()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Entrada de Dinheiro</button>
                 <div id="lista-rendas-fixas" class="mt-4 space-y-2"></div>
             </div>
-
-            <!-- Taxas e Configurações -->
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm grid grid-cols-2 gap-4 text-center">
-                <div>
-                    <label class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Valor Hora Pearson ($ USD)</label>
-                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="bg-transparent border-none text-slate-900 font-bold text-base w-full text-center outline-none font-mono" step="0.01">
-                </div>
-                <div>
-                    <label class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Taxa Dólar -> Euro (€)</label>
-                    <input type="number" id="cfg-taxa" onchange="atualizarTaxa()" class="bg-transparent border-none text-slate-900 font-bold text-base w-full text-center outline-none font-mono" step="0.01" placeholder="0.92">
-                </div>
-            </div>
         </section>
 
         <!-- Aba Contas Fixas Recorrentes -->
@@ -161,7 +150,7 @@
             <div id="lista-contas-fixas" class="space-y-2"></div>
         </section>
 
-        <!-- Aba Parcelamentos e Débitos (COM CONTROLO DE PARCELAS E VENCIMENTO) -->
+        <!-- Aba Parcelamentos e Débitos -->
         <section id="debitos" class="tab-content space-y-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Novo Parcelamento / Débito a Acompanhar</h3>
@@ -247,9 +236,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        if (!localStorage.getItem('vh')) localStorage.setItem('vh', '16.25');
-        if (!localStorage.getItem('taxaUsdEur')) localStorage.setItem('taxaUsdEur', '0.92');
-
         window.login = function() {
             const senhaInput = document.getElementById('senha');
             if(senhaInput.value.trim() === 'hamilton2026') {
@@ -281,24 +267,27 @@
         };
 
         const fmt = (v) => new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(v || 0);
-        const fmtUSD = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
 
-        // Salvar Pearson
-        window.salvarPearson = async () => {
+        // Salvar Pearson em Euros Diretos
+        window.salvarPearsonEUR = async () => {
+            const lote = document.getElementById('p-lote').value;
             const dStr = document.getElementById('p-data').value;
-            const h = parseFloat(document.getElementById('p-horas').value);
-            if (!dStr || isNaN(h) || h <= 0) return alert("Preencha data e horas válidas.");
-            
-            const [anoStr, mesStr, diaStr] = dStr.split('-');
-            let ano = parseInt(anoStr, 10);
-            let mes = parseInt(mesStr, 10) - 1;
-            let dia = parseInt(diaStr, 10);
-            let previsao = (dia >= 11 && dia <= 25) ? "Recebe Dia 10" : "Recebe Dia 25";
-            if (dia >= 11) { mes += 1; if (mes > 11) { mes = 0; ano += 1; } }
-            const mesRef = `${ano}-${String(mes + 1).padStart(2, '0')}`;
-            
-            await addDoc(collection(db, "pearson"), { dataTrab: dStr, horas: h, mesRef, previsao, ano: String(ano) });
-            document.getElementById('p-horas').value = '';
+            const val = parseFloat(document.getElementById('p-val').value);
+
+            if (!dStr || isNaN(val) || val <= 0) return alert("Informe a data e o valor correto em Euros.");
+
+            const mesRef = dStr.substring(0, 7);
+            const ano = dStr.substring(0, 4);
+
+            await addDoc(collection(db, "pearson"), { 
+                tipo: `Pearson - ${lote}`, 
+                dataTrab: dStr, 
+                valorEUR: val, 
+                mesRef, 
+                ano 
+            });
+
+            document.getElementById('p-val').value = '';
         };
 
         // Salvar Outras Entradas
@@ -372,16 +361,9 @@
         };
 
         window.remover = async (col, id) => { if(confirm("Deseja apagar este registro?")) await deleteDoc(doc(db, col, id)); };
-        window.atualizarVH = () => { localStorage.setItem('vh', document.getElementById('cfg-vh').value); trocarMes(); };
-        window.atualizarTaxa = () => { localStorage.setItem('taxaUsdEur', document.getElementById('cfg-taxa').value); trocarMes(); };
 
         function carregarDados(mes) {
-            const vhUSD = parseFloat(localStorage.getItem('vh')) || 16.25;
-            const taxa = parseFloat(localStorage.getItem('taxaUsdEur')) || 0.92;
-            document.getElementById('cfg-vh').value = vhUSD;
-            document.getElementById('cfg-taxa').value = taxa;
-
-            // Escutar Entradas
+            // Escutar Entradas Diversas
             unsubs.push(onSnapshot(query(collection(db, "rendas_lista"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', total = 0;
                 snap.forEach(d => {
@@ -403,31 +385,33 @@
                 calcularTudo();
             }));
 
-            // Escutar Pearson
+            // Escutar Pearson (Compatível com formato novo em € e antigo em horas)
             unsubs.push(onSnapshot(query(collection(db, "pearson"), where("mesRef", "==", mes)), (snap) => {
-                let html = '', totalUSD = 0; 
+                let html = '', totalEUR = 0; 
                 snap.forEach(d => { 
-                    const subUSD = d.data().horas * vhUSD;
-                    const subEUR = subUSD * taxa;
-                    totalUSD += subUSD; 
+                    const data = d.data();
+                    let subEUR = data.valorEUR;
+                    
+                    // Fallback caso seja um registo antigo de horas
+                    if (subEUR === undefined && data.horas) {
+                        subEUR = data.horas * 16.25 * 0.92;
+                    }
+                    
+                    totalEUR += (subEUR || 0); 
                     
                     html += `<div class="bg-white p-3.5 rounded-xl flex justify-between items-center border border-slate-200 shadow-sm">
                         <div>
-                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">${d.data().dataTrab}</p>
-                            <p class="text-xs font-semibold text-slate-700">${d.data().horas}h — <span class="text-slate-500 font-normal">${d.data().previsao}</span></p>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">${data.dataTrab || data.dataRec || ''}</p>
+                            <p class="text-xs font-bold text-slate-800">${data.tipo || 'Pearson Quinzena'}</p>
                         </div>
                         <div class="flex gap-3 items-center font-mono text-xs text-right">
-                            <div>
-                                <span class="font-bold text-slate-800 block">${fmtUSD(subUSD)}</span>
-                                <span class="text-[10px] text-emerald-600 block">≈ ${fmt(subEUR)}</span>
-                            </div>
+                            <span class="font-bold text-emerald-600 block text-sm">${fmt(subEUR)}</span>
                             <button onclick="remover('pearson','${d.id}')" class="text-slate-300 hover:text-rose-500 text-sm">✕</button>
                         </div>
                     </div>`; 
                 });
                 document.getElementById('lista-ponto').innerHTML = html; 
-                window.totalP_EUR = totalUSD * taxa; 
-                document.getElementById('pearson-usd').innerText = fmtUSD(totalUSD);
+                window.totalP_EUR = totalEUR; 
                 document.getElementById('pearson-eur').innerText = fmt(window.totalP_EUR);
                 calcularTudo();
             }));
@@ -494,7 +478,7 @@
                         html += `<div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs flex justify-between items-center opacity-70">
                             <div>
                                 <span class="font-bold text-slate-700 line-through">${data.desc}</span>
-                                <span class="text-[10px] text-emerald-600 font-bold block"> Quitada! All clear</span>
+                                <span class="text-[10px] text-emerald-600 font-bold block">✓ Quitada! All clear</span>
                             </div>
                             <button onclick="remover('debitos_pendentes','${d.id}')" class="text-slate-300 hover:text-rose-500 text-sm">✕</button>
                         </div>`;
@@ -552,12 +536,9 @@
         async function gerarRelatorioAnual() {
             const ano = document.getElementById('filtro-mes').value.substring(0, 4);
             let tB = 0, tG = 0; 
-            const vhUSD = parseFloat(localStorage.getItem('vh')) || 16.25;
-            const taxa = parseFloat(localStorage.getItem('taxaUsdEur')) || 0.92;
-            const vhEUR = vhUSD * taxa;
 
             const pS = await getDocs(query(collection(db, "pearson"), where("ano", "==", ano)));
-            pS.forEach(d => tB += (d.data().horas * vhEUR));
+            pS.forEach(d => tB += (d.data().valorEUR || (d.data().horas * 16.25 * 0.92) || 0));
             const rS = await getDocs(query(collection(db, "rendas_lista"), where("ano", "==", ano)));
             rS.forEach(d => tB += d.data().valor);
             const gS = await getDocs(query(collection(db, "gastos"), where("ano", "==", ano)));
