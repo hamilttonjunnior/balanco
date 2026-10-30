@@ -71,7 +71,7 @@
         <nav class="flex border-b border-slate-200 mb-6 text-xs uppercase font-medium tracking-wider gap-4 overflow-x-auto">
             <button onclick="showTab(event, 'entradas')" class="tab-btn active-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Entradas & Pearson</button>
             <button onclick="showTab(event, 'contas-fixas')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Contas Fixas</button>
-            <button onclick="showTab(event, 'debitos')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Débitos / Dívidas</button>
+            <button onclick="showTab(event, 'debitos')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Parcelamentos / Débitos</button>
             <button onclick="showTab(event, 'gastos')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Variáveis</button>
             <button onclick="showTab(event, 'resumo')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Balanço Real</button>
             <button onclick="showTab(event, 'anual')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Anual</button>
@@ -161,18 +161,29 @@
             <div id="lista-contas-fixas" class="space-y-2"></div>
         </section>
 
-        <!-- Aba Débitos e Dívidas -->
+        <!-- Aba Parcelamentos e Débitos (COM CONTROLO DE PARCELAS E VENCIMENTO) -->
         <section id="debitos" class="tab-content space-y-4">
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Registar Débito / Dívida por Liquidar</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <input type="text" id="deb-desc" placeholder="Descrição da Dívida / Equipamento" class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm outline-none focus:bg-white">
-                    <input type="number" id="deb-total" placeholder="Valor Restante Devedor €" step="0.01" class="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-sm outline-none focus:bg-white">
-                    <input type="number" id="deb-parcela" placeholder="Prestação Mensal €" step="0.01" class="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-sm outline-none focus:bg-white">
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Novo Parcelamento / Débito a Acompanhar</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input type="text" id="deb-desc" placeholder="Descrição do Item / Compra (Ex: Lente Sony)" class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm outline-none focus:bg-white sm:col-span-2">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Valor da Parcela (€)</label>
+                        <input type="number" id="deb-parcela" placeholder="0.00" step="0.01" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 font-mono text-sm outline-none focus:bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Parcelas Faltantes</label>
+                        <input type="number" id="deb-qtd" placeholder="Ex: 4" min="1" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 font-mono text-sm outline-none focus:bg-white">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Dia Vencimento (1-31)</label>
+                        <input type="number" id="deb-venc" placeholder="Ex: 10" min="1" max="31" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 font-mono text-sm outline-none focus:bg-white">
+                    </div>
                 </div>
-                <button onclick="addDebito()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Débito Pendente</button>
+                <button onclick="addDebito()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Compra Parcelada</button>
             </div>
-            <div id="lista-debitos" class="space-y-2"></div>
+            
+            <div id="lista-debitos" class="space-y-3"></div>
         </section>
 
         <!-- Aba Despesas Variáveis -->
@@ -316,17 +327,38 @@
             document.getElementById('cf-dia').value = '';
         };
 
-        // Gestão de Débitos / Dívidas
+        // Gestão de Débitos e Compras Parceladas
         window.addDebito = async () => {
             const desc = document.getElementById('deb-desc').value;
-            const total = parseFloat(document.getElementById('deb-total').value);
             const parcela = parseFloat(document.getElementById('deb-parcela').value);
-            if (!desc || isNaN(total)) return alert("Informe a descrição e o valor devido.");
+            const qtd = parseInt(document.getElementById('deb-qtd').value, 10);
+            const venc = parseInt(document.getElementById('deb-venc').value, 10) || 10;
 
-            await addDoc(collection(db, "debitos_pendentes"), { desc, valorRestante: total, parcelaMensal: parcela || 0, quitado: false });
+            if (!desc || isNaN(parcela) || isNaN(qtd)) return alert("Informe a descrição, valor da parcela e a quantidade de parcelas.");
+
+            await addDoc(collection(db, "debitos_pendentes"), { 
+                desc, 
+                parcelaMensal: parcela, 
+                parcelasRestantes: qtd, 
+                parcelasTotais: qtd,
+                diaVencimento: venc,
+                quitado: false 
+            });
+
             document.getElementById('deb-desc').value = '';
-            document.getElementById('deb-total').value = '';
             document.getElementById('deb-parcela').value = '';
+            document.getElementById('deb-qtd').value = '';
+            document.getElementById('deb-venc').value = '';
+        };
+
+        // Dar Baixa em 1 Parcela Pago
+        window.pagarParcela = async (id, parcelasRestantes) => {
+            const novaQtd = parcelasRestantes - 1;
+            const isQuitado = novaQtd <= 0;
+            await updateDoc(doc(db, "debitos_pendentes", id), {
+                parcelasRestantes: Math.max(0, novaQtd),
+                quitado: isQuitado
+            });
         };
 
         window.addGasto = async () => {
@@ -349,7 +381,7 @@
             document.getElementById('cfg-vh').value = vhUSD;
             document.getElementById('cfg-taxa').value = taxa;
 
-            // Escutar Entradas Diversas
+            // Escutar Entradas
             unsubs.push(onSnapshot(query(collection(db, "rendas_lista"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', total = 0;
                 snap.forEach(d => {
@@ -422,28 +454,55 @@
                 calcularTudo();
             }));
 
-            // Escutar Débitos Pendentes
+            // Escutar Débitos e Parcelamentos Ativos
             unsubs.push(onSnapshot(collection(db, "debitos_pendentes"), (snap) => {
-                let html = '', totalRestante = 0;
+                let html = '', totalDevedorGeral = 0, parcelasMesTotal = 0;
                 snap.forEach(d => {
                     const data = d.data();
-                    if (!data.quitado) totalRestante += data.valorRestante;
-                    html += `<div class="bg-white p-3.5 rounded-xl flex justify-between items-center border border-slate-200 shadow-sm text-xs">
-                        <div>
-                            <span class="font-bold text-slate-800 block">${data.desc}</span>
-                            <span class="text-[10px] text-amber-600 font-medium">Prestação Mensal: ${fmt(data.parcelaMensal)}</span>
-                        </div>
-                        <div class="flex gap-3 items-center font-mono font-bold text-slate-900">
-                            <div>
-                                <span class="block">${fmt(data.valorRestante)}</span>
-                                <span class="text-[9px] font-sans font-normal text-slate-400 block">Devedor</span>
+                    const pRestantes = data.parcelasRestantes ?? 0;
+                    const pTotais = data.parcelasTotais ?? pRestantes;
+                    const pPagas = pTotais - pRestantes;
+                    const valRestante = pRestantes * data.parcelaMensal;
+
+                    if (!data.quitado && pRestantes > 0) {
+                        totalDevedorGeral += valRestante;
+                        parcelasMesTotal += data.parcelaMensal;
+
+                        html += `<div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-xs space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <span class="font-bold text-slate-900 text-sm block">${data.desc}</span>
+                                    <span class="text-[11px] text-slate-500 font-medium">Vencimento: <strong class="text-slate-800">Dia ${data.diaVencimento || 10}</strong></span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-mono font-bold text-amber-700 text-sm block">${fmt(data.parcelaMensal)} /mês</span>
+                                    <span class="text-[10px] text-slate-400 font-mono">Falta pagar: ${fmt(valRestante)}</span>
+                                </div>
                             </div>
-                            <button onclick="remover('debitos_pendentes','${d.id}')" class="text-slate-300 hover:text-rose-500">✕</button>
-                        </div>
-                    </div>`;
+
+                            <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold text-slate-400 block">Progresso</span>
+                                    <span class="font-semibold text-slate-700">${pPagas} de ${pTotais} pagas (<strong class="text-amber-600">${pRestantes} faltantes</strong>)</span>
+                                </div>
+                                <button onclick="pagarParcela('${d.id}', ${pRestantes})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-[11px] font-bold transition shadow-sm">
+                                    ✓ Confirmar Mês
+                                </button>
+                            </div>
+                        </div>`;
+                    } else {
+                        html += `<div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs flex justify-between items-center opacity-70">
+                            <div>
+                                <span class="font-bold text-slate-700 line-through">${data.desc}</span>
+                                <span class="text-[10px] text-emerald-600 font-bold block"> Quitada! All clear</span>
+                            </div>
+                            <button onclick="remover('debitos_pendentes','${d.id}')" class="text-slate-300 hover:text-rose-500 text-sm">✕</button>
+                        </div>`;
+                    }
                 });
                 document.getElementById('lista-debitos').innerHTML = html;
-                window.totalDebitos = totalRestante;
+                window.totalDebitos = totalDevedorGeral;
+                window.parcelasMesTotal = parcelasMesTotal;
                 calcularTudo();
             }));
 
@@ -464,8 +523,10 @@
         function calcularTudo() {
             const entradasTotal = (window.totalRendasFixas || 0) + (window.totalP_EUR || 0);
             const despesasFixas = window.totalContasFixas || 0;
+            const parcelasMes = window.parcelasMesTotal || 0;
             const despesasVariaveis = window.totalG || 0;
-            const despesasTotal = despesasFixas + despesasVariaveis;
+            
+            const despesasTotal = despesasFixas + parcelasMes + despesasVariaveis;
             
             const dizimo = entradasTotal * 0.10;
             const liquido = entradasTotal - dizimo - despesasTotal;
