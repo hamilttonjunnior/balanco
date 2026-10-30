@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestão Financeira</title>
+    <title>Gestão Financeira & Balanço Real</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .tab-content { display: none; }
@@ -35,92 +35,94 @@
     </div>
 
     <!-- Conteúdo Principal -->
-    <div id="main-content" class="hidden max-w-2xl mx-auto p-4 sm:p-6 pb-28">
+    <div id="main-content" class="hidden max-w-3xl mx-auto p-4 sm:p-6 pb-28">
         
         <!-- Top Bar / Resumo Executivo -->
         <header class="py-4 sticky top-0 bg-slate-100/90 backdrop-blur-md z-10 border-b border-slate-200 mb-6">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <h1 class="text-lg font-bold text-slate-900 tracking-tight">Extrato Real</h1>
-                    <p class="text-[11px] text-slate-500 font-medium">Balanço Financeiro v13 (Completo)</p>
+                    <h1 class="text-lg font-bold text-slate-900 tracking-tight">Balanço & Gestão Real</h1>
+                    <p class="text-[11px] text-slate-500 font-medium">Controlo Integrado de Entradas, Custos Fixos e Débitos</p>
                 </div>
                 <input type="month" id="filtro-mes" onchange="trocarMes()" class="bg-white px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 outline-none text-slate-700 shadow-sm focus:border-slate-400">
             </div>
             
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Entradas</p>
+                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Entradas do Mês</p>
                     <p id="top-ganhos" class="text-sm font-mono font-bold text-emerald-600 mt-0.5">0,00 €</p>
                 </div>
                 <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Saídas</p>
+                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Saídas do Mês</p>
                     <p id="top-gastos" class="text-sm font-mono font-bold text-rose-600 mt-0.5">0,00 €</p>
                 </div>
-                <div id="top-card-mensal" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                     <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Líquido Mês</p>
                     <p id="top-mensal" class="text-sm font-mono font-bold text-slate-800 mt-0.5">0,00 €</p>
                 </div>
-                <div id="top-card-saldo" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Saldo Geral</p>
-                    <p id="top-saldo" class="text-sm font-mono font-bold text-slate-900 mt-0.5">0,00 €</p>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Débitos Pendentes</p>
+                    <p id="top-debitos" class="text-sm font-mono font-bold text-amber-600 mt-0.5">0,00 €</p>
                 </div>
             </div>
         </header>
 
         <!-- Navegação de Abas -->
-        <nav class="flex border-b border-slate-200 mb-6 text-xs uppercase font-medium tracking-wider gap-6 overflow-x-auto">
-            <button onclick="showTab(event, 'pearson')" class="tab-btn active-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Pearson</button>
-            <button onclick="showTab(event, 'rendas')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Entradas Fixas</button>
-            <button onclick="showTab(event, 'gastos')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Saídas</button>
-            <button onclick="showTab(event, 'resumo')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Balanço</button>
+        <nav class="flex border-b border-slate-200 mb-6 text-xs uppercase font-medium tracking-wider gap-4 overflow-x-auto">
+            <button onclick="showTab(event, 'entradas')" class="tab-btn active-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Entradas & Pearson</button>
+            <button onclick="showTab(event, 'contas-fixas')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Contas Fixas</button>
+            <button onclick="showTab(event, 'debitos')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Débitos / Dívidas</button>
+            <button onclick="showTab(event, 'gastos')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Variáveis</button>
+            <button onclick="showTab(event, 'resumo')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Balanço Real</button>
             <button onclick="showTab(event, 'anual')" class="tab-btn pb-2.5 px-1 whitespace-nowrap text-slate-500 hover:text-slate-900 transition">Anual</button>
         </nav>
 
-        <!-- Aba Pearson -->
-        <section id="pearson" class="tab-content active space-y-4">
+        <!-- Aba Entradas & Pearson -->
+        <section id="entradas" class="tab-content active space-y-6">
+            <!-- Ponto Pearson -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Registo Ponto Pearson (USD → EUR)</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[11px] uppercase font-bold text-slate-500 mb-1.5">Data do Trabalho</label>
                         <input type="date" id="p-data" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 text-slate-800 text-sm outline-none focus:bg-white focus:border-slate-400 transition">
                     </div>
                     <div>
-                        <label class="block text-[11px] uppercase font-bold text-slate-500 mb-1.5">Horas</label>
+                        <label class="block text-[11px] uppercase font-bold text-slate-500 mb-1.5">Horas Trab.</label>
                         <input type="number" id="p-horas" step="0.5" placeholder="0.0" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 font-mono text-slate-800 text-sm outline-none focus:bg-white focus:border-slate-400 transition">
                     </div>
                 </div>
-                <button onclick="salvarPearson()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Ponto Pearson</button>
-            </div>
-            
-            <div id="resumo-pearson-mes" class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
-                <div>
-                    <span class="text-slate-400 uppercase font-bold tracking-wider text-[10px] block">Total Pearson (USD)</span>
-                    <span id="pearson-usd" class="font-mono font-bold text-slate-900 text-sm">$0.00 USD</span>
+                <button onclick="salvarPearson()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Horas Pearson</button>
+                
+                <div id="resumo-pearson-mes" class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                    <div>
+                        <span class="text-slate-400 uppercase font-bold tracking-wider text-[10px] block">Total Pearson (USD)</span>
+                        <span id="pearson-usd" class="font-mono font-bold text-slate-900 text-sm">$0.00 USD</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-slate-400 uppercase font-bold tracking-wider text-[10px] block">Convertido (EUR)</span>
+                        <span id="pearson-eur" class="font-mono font-bold text-emerald-600 text-sm">0,00 €</span>
+                    </div>
                 </div>
-                <div class="text-right">
-                    <span class="text-slate-400 uppercase font-bold tracking-wider text-[10px] block">Convertido (EUR)</span>
-                    <span id="pearson-eur" class="font-mono font-bold text-emerald-600 text-sm">0,00 €</span>
-                </div>
+                <div id="lista-ponto" class="space-y-2"></div>
             </div>
 
-            <div id="lista-ponto" class="space-y-2.5"></div>
-        </section>
-
-        <!-- Aba Entradas (Gamil, Vôlei e Extras) -->
-        <section id="rendas" class="tab-content space-y-6">
-            <!-- Formulário Dinâmico Renda Fixa (Gamil e Vôlei) -->
+            <!-- Outras Entradas (Gamil, Foto Cássia, Freelance, Vôlei) -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Lançar Recebimento (Gamil / Vôlei)</h3>
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Lançar Outros Recebimentos</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Fonte</label>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Origem / Fonte</label>
                         <select id="rf-tipo" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 text-slate-800 text-sm outline-none focus:bg-white">
-                            <option value="Gamil">Gamil</option>
-                            <option value="Vôlei">Vôlei</option>
+                            <option value="Gamil">Gamil (Salário)</option>
+                            <option value="Fotografia Cássia">Foto Cássia (Studios Moriah)</option>
+                            <option value="Freelance Video/VFX">Freelance Video / VFX</option>
+                            <option value="Vôlei">Vôlei (Os Académicos)</option>
+                            <option value="Outros Extras">Outros Extras</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Data Recebimento</label>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Data de Entrada</label>
                         <input type="date" id="rf-data" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 text-slate-800 text-sm outline-none focus:bg-white">
                     </div>
                     <div>
@@ -128,44 +130,59 @@
                         <input type="number" id="rf-val" placeholder="0.00" step="0.01" class="bg-slate-50 p-3 rounded-xl w-full border border-slate-200 font-mono text-slate-800 text-sm outline-none focus:bg-white">
                     </div>
                 </div>
-                <button onclick="salvarRendaFixa()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Adicionar Recebimento</button>
-                
-                <!-- Lista de Recebimentos Fixos -->
+                <button onclick="salvarRendaFixa()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Entrada de Dinheiro</button>
                 <div id="lista-rendas-fixas" class="mt-4 space-y-2"></div>
             </div>
 
-            <!-- Bloco de Extras e Configurações de Taxa -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+            <!-- Taxas e Configurações -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm grid grid-cols-2 gap-4 text-center">
                 <div>
-                    <label class="text-[11px] uppercase block mb-3 font-bold text-slate-700">Ganhos Extras (€)</label>
-                    <input type="text" id="extra-desc" placeholder="Descrição do extra" class="w-full bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3 text-sm outline-none focus:bg-white focus:border-slate-400 transition">
-                    <div class="flex gap-2">
-                        <input type="number" id="extra-val" class="flex-1 bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-sm outline-none focus:bg-white focus:border-slate-400 transition" placeholder="Valor €">
-                        <button onclick="addExtra()" class="bg-slate-900 hover:bg-slate-800 text-white px-5 rounded-xl font-bold transition">+</button>
-                    </div>
-                    <div id="lista-extras" class="mt-4 space-y-2"></div>
+                    <label class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Valor Hora Pearson ($ USD)</label>
+                    <input type="number" id="cfg-vh" onchange="atualizarVH()" class="bg-transparent border-none text-slate-900 font-bold text-base w-full text-center outline-none font-mono" step="0.01">
                 </div>
-
-                <div class="border-t border-slate-100 pt-4 grid grid-cols-2 gap-4 text-center">
-                    <div>
-                        <label class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Preço Hora Pearson ($ USD)</label>
-                        <input type="number" id="cfg-vh" onchange="atualizarVH()" class="bg-transparent border-none text-slate-900 font-bold text-lg w-full text-center outline-none font-mono" step="0.01">
-                    </div>
-                    <div>
-                        <label class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Taxa Dólar -> Euro (€)</label>
-                        <input type="number" id="cfg-taxa" onchange="atualizarTaxa()" class="bg-transparent border-none text-slate-900 font-bold text-lg w-full text-center outline-none font-mono" step="0.01" placeholder="0.92">
-                    </div>
+                <div>
+                    <label class="text-[10px] uppercase text-slate-400 font-bold block mb-1">Taxa Dólar -> Euro (€)</label>
+                    <input type="number" id="cfg-taxa" onchange="atualizarTaxa()" class="bg-transparent border-none text-slate-900 font-bold text-base w-full text-center outline-none font-mono" step="0.01" placeholder="0.92">
                 </div>
             </div>
         </section>
 
-        <!-- Aba Saídas -->
+        <!-- Aba Contas Fixas Recorrentes -->
+        <section id="contas-fixas" class="tab-content space-y-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Adicionar Custo / Conta Fixa Mensal</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <input type="text" id="cf-desc" placeholder="Ex: Renda Casa, Luz, Net, Seguro" class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm outline-none focus:bg-white">
+                    <input type="number" id="cf-val" placeholder="Valor Estimado €" step="0.01" class="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-sm outline-none focus:bg-white">
+                    <input type="number" id="cf-dia" placeholder="Dia do Vencimento (1-31)" min="1" max="31" class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm outline-none focus:bg-white">
+                </div>
+                <button onclick="addContaFixa()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Guardar Conta Fixa</button>
+            </div>
+            <div id="lista-contas-fixas" class="space-y-2"></div>
+        </section>
+
+        <!-- Aba Débitos e Dívidas -->
+        <section id="debitos" class="tab-content space-y-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Registar Débito / Dívida por Liquidar</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <input type="text" id="deb-desc" placeholder="Descrição da Dívida / Equipamento" class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm outline-none focus:bg-white">
+                    <input type="number" id="deb-total" placeholder="Valor Restante Devedor €" step="0.01" class="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-sm outline-none focus:bg-white">
+                    <input type="number" id="deb-parcela" placeholder="Prestação Mensal €" step="0.01" class="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-sm outline-none focus:bg-white">
+                </div>
+                <button onclick="addDebito()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Registar Débito Pendente</button>
+            </div>
+            <div id="lista-debitos" class="space-y-2"></div>
+        </section>
+
+        <!-- Aba Despesas Variáveis -->
         <section id="gastos" class="tab-content">
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Lançar Despesa Pontual do Mês</h3>
                 <div class="flex flex-col gap-3 mb-5">
-                    <input type="text" id="g-desc" placeholder="Descrição da despesa" class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-sm outline-none focus:bg-white focus:border-slate-400 transition">
+                    <input type="text" id="g-desc" placeholder="Descrição da despesa (Mercado, Combustível, Extra...)" class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-sm outline-none focus:bg-white transition">
                     <div class="flex gap-2">
-                        <input type="number" id="g-val" placeholder="Valor €" class="flex-1 bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono text-sm outline-none focus:bg-white focus:border-slate-400 transition">
+                        <input type="number" id="g-val" placeholder="Valor €" class="flex-1 bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono text-sm outline-none focus:bg-white transition">
                         <button onclick="addGasto()" class="bg-rose-600 hover:bg-rose-700 text-white px-6 rounded-xl font-semibold text-xs uppercase tracking-wider transition shadow-sm">Adicionar</button>
                     </div>
                 </div>
@@ -173,10 +190,10 @@
             </div>
         </section>
 
-        <!-- Aba Resumo / Balanço -->
+        <!-- Aba Resumo / Balanço Integrado -->
         <section id="resumo" class="tab-content space-y-3">
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Bruto Recebido no Mês (Total em €)</p>
+                <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Entradas Brutas no Mês (€)</p>
                 <h2 id="res-bruto" class="text-2xl font-mono font-bold mt-1 text-slate-900">0,00 €</h2>
             </div>
             
@@ -186,13 +203,14 @@
             </div>
 
             <div id="card-liq-detalhe" class="p-5 rounded-2xl border shadow-sm transition-all bg-white">
-                <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Saldo Líquido Mensal</p>
+                <p class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Sobra do Mês (Caixa Líquido)</p>
                 <h2 id="res-liquido" class="text-2xl font-mono font-bold mt-1">0,00 €</h2>
+                <p id="res-pode-poupar" class="text-xs font-medium text-emerald-700 mt-2"></p>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Trânsito Acumulado Anterior</p>
-                <h2 id="res-anterior" class="text-base font-mono font-bold mt-1 text-slate-700">0,00 €</h2>
+                <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total de Débitos / Dívidas Restantes</p>
+                <h2 id="res-total-debitos" class="text-base font-mono font-bold mt-1 text-amber-700">0,00 €</h2>
             </div>
         </section>
 
@@ -204,7 +222,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, where, deleteDoc, doc, setDoc, getDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, deleteDoc, doc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA7nFxZzTDpLLGZZPmey_kt5Y_AYrWBgt8",
@@ -223,9 +241,7 @@
 
         window.login = function() {
             const senhaInput = document.getElementById('senha');
-            const senha = senhaInput.value.trim();
-            
-            if(senha === 'hamilton2026') {
+            if(senhaInput.value.trim() === 'hamilton2026') {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-content').classList.remove('hidden');
                 const agora = new Date();
@@ -250,40 +266,13 @@
         window.trocarMes = async () => {
             unsubs.forEach(u => u()); unsubs = [];
             const mesAtual = document.getElementById('filtro-mes').value;
-            await calcularSaldoAnterior(mesAtual);
             carregarDados(mesAtual);
         };
 
-        const fmt = (v) => new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(v);
-        const fmtUSD = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v);
+        const fmt = (v) => new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(v || 0);
+        const fmtUSD = (v) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(v || 0);
 
-        async function calcularSaldoAnterior(mesFiltro) {
-            try {
-                const vhUSD = parseFloat(localStorage.getItem('vh')) || 16.25;
-                const taxa = parseFloat(localStorage.getItem('taxaUsdEur')) || 0.92;
-                const vhEUR = vhUSD * taxa;
-
-                let brutoAcum = 0; let gastosAcum = 0;
-                
-                const rS = await getDocs(collection(db, "rendas_lista"));
-                rS.forEach(d => { if(d.data().mesRef < mesFiltro) brutoAcum += d.data().valor; });
-
-                const pS = await getDocs(collection(db, "pearson"));
-                pS.forEach(d => { if(d.data().mesRef < mesFiltro) brutoAcum += (d.data().horas * vhEUR); });
-
-                const eS = await getDocs(collection(db, "extras"));
-                eS.forEach(d => { if(d.data().mesRef < mesFiltro) brutoAcum += d.data().valor; });
-
-                const gS = await getDocs(collection(db, "gastos"));
-                gS.forEach(d => { if(d.data().mesRef < mesFiltro) gastosAcum += d.data().val; });
-
-                window.saldoAnterior = (brutoAcum * 0.90) - gastosAcum;
-                document.getElementById('res-anterior').innerText = fmt(window.saldoAnterior);
-            } catch (e) {
-                console.error("Erro ao calcular saldo anterior:", e);
-            }
-        }
-
+        // Salvar Pearson
         window.salvarPearson = async () => {
             const dStr = document.getElementById('p-data').value;
             const h = parseFloat(document.getElementById('p-horas').value);
@@ -301,35 +290,43 @@
             document.getElementById('p-horas').value = '';
         };
 
-        // Salvar Renda Fixa Dinâmica (Gamil / Vôlei)
+        // Salvar Outras Entradas
         window.salvarRendaFixa = async () => {
             const tipo = document.getElementById('rf-tipo').value;
             const dStr = document.getElementById('rf-data').value;
             const val = parseFloat(document.getElementById('rf-val').value);
-
             if(!dStr || isNaN(val) || val <= 0) return alert("Informe a data e o valor correto.");
 
             const mesRef = dStr.substring(0, 7);
             const ano = dStr.substring(0, 4);
-
             await addDoc(collection(db, "rendas_lista"), { tipo, dataRec: dStr, valor: val, mesRef, ano });
             document.getElementById('rf-val').value = '';
         };
 
-        window.editarItem = async (col, id, valAtual, desc) => {
-            const novoVal = prompt(`Novo valor para ${desc}:`, valAtual);
-            if(novoVal !== null && !isNaN(parseFloat(novoVal))) {
-                await updateDoc(doc(db, col, id), { valor: parseFloat(novoVal) });
-            }
+        // Gestão de Contas Fixas
+        window.addContaFixa = async () => {
+            const desc = document.getElementById('cf-desc').value;
+            const val = parseFloat(document.getElementById('cf-val').value);
+            const dia = parseInt(document.getElementById('cf-dia').value, 10);
+            if (!desc || isNaN(val) || isNaN(dia)) return alert("Preencha todos os campos da conta fixa.");
+
+            await addDoc(collection(db, "contas_fixas"), { desc, valor: val, dia, ativo: true });
+            document.getElementById('cf-desc').value = '';
+            document.getElementById('cf-val').value = '';
+            document.getElementById('cf-dia').value = '';
         };
 
-        window.addExtra = async () => {
-            const mes = document.getElementById('filtro-mes').value;
-            const desc = document.getElementById('extra-desc').value || "Extra";
-            const val = parseFloat(document.getElementById('extra-val').value);
-            if(isNaN(val)) return;
-            await addDoc(collection(db, "extras"), { desc, valor: val, mesRef: mes, ano: mes.substring(0,4) });
-            document.getElementById('extra-desc').value = ''; document.getElementById('extra-val').value = '';
+        // Gestão de Débitos / Dívidas
+        window.addDebito = async () => {
+            const desc = document.getElementById('deb-desc').value;
+            const total = parseFloat(document.getElementById('deb-total').value);
+            const parcela = parseFloat(document.getElementById('deb-parcela').value);
+            if (!desc || isNaN(total)) return alert("Informe a descrição e o valor devido.");
+
+            await addDoc(collection(db, "debitos_pendentes"), { desc, valorRestante: total, parcelaMensal: parcela || 0, quitado: false });
+            document.getElementById('deb-desc').value = '';
+            document.getElementById('deb-total').value = '';
+            document.getElementById('deb-parcela').value = '';
         };
 
         window.addGasto = async () => {
@@ -349,11 +346,10 @@
         function carregarDados(mes) {
             const vhUSD = parseFloat(localStorage.getItem('vh')) || 16.25;
             const taxa = parseFloat(localStorage.getItem('taxaUsdEur')) || 0.92;
-            
             document.getElementById('cfg-vh').value = vhUSD;
             document.getElementById('cfg-taxa').value = taxa;
 
-            // Escutar Rendas Fixas (Gamil / Vôlei)
+            // Escutar Entradas Diversas
             unsubs.push(onSnapshot(query(collection(db, "rendas_lista"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', total = 0;
                 snap.forEach(d => {
@@ -366,7 +362,6 @@
                         </div>
                         <div class="flex gap-3 items-center font-mono font-bold text-slate-800">
                             ${fmt(data.valor)}
-                            <button onclick="editarItem('rendas_lista','${d.id}', ${data.valor}, '${data.tipo}')" class="text-slate-400 hover:text-slate-700">✎</button>
                             <button onclick="remover('rendas_lista','${d.id}')" class="text-slate-300 hover:text-rose-500">✕</button>
                         </div>
                     </div>`;
@@ -375,7 +370,7 @@
                 window.totalRendasFixas = total;
                 calcularTudo();
             }));
-            
+
             // Escutar Pearson
             unsubs.push(onSnapshot(query(collection(db, "pearson"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', totalUSD = 0; 
@@ -405,20 +400,54 @@
                 calcularTudo();
             }));
 
-            // Escutar Extras
-            unsubs.push(onSnapshot(query(collection(db, "extras"), where("mesRef", "==", mes)), (snap) => {
-                let html = '', total = 0; 
-                snap.forEach(d => { 
-                    total += d.data().valor; 
-                    html += `<div class="bg-slate-50 p-3 rounded-xl flex justify-between items-center border border-slate-200 text-xs">
-                        <span class="font-medium text-slate-700">${d.data().desc}</span>
-                        <div class="flex gap-3 font-mono font-bold text-slate-800">${fmt(d.data().valor)}<button onclick="remover('extras','${d.id}')" class="text-slate-300 hover:text-rose-500">✕</button></div>
-                    </div>`; 
+            // Escutar Contas Fixas
+            unsubs.push(onSnapshot(collection(db, "contas_fixas"), (snap) => {
+                let html = '', total = 0;
+                snap.forEach(d => {
+                    const data = d.data();
+                    total += data.valor;
+                    html += `<div class="bg-white p-3.5 rounded-xl flex justify-between items-center border border-slate-200 shadow-sm text-xs">
+                        <div>
+                            <span class="font-bold text-slate-800 block">${data.desc}</span>
+                            <span class="text-[10px] text-slate-400 font-semibold">Vencimento: Dia ${data.dia}</span>
+                        </div>
+                        <div class="flex gap-3 items-center font-mono font-bold text-rose-600">
+                            ${fmt(data.valor)}
+                            <button onclick="remover('contas_fixas','${d.id}')" class="text-slate-300 hover:text-rose-500">✕</button>
+                        </div>
+                    </div>`;
                 });
-                document.getElementById('lista-extras').innerHTML = html; window.totalE = total; calcularTudo();
+                document.getElementById('lista-contas-fixas').innerHTML = html;
+                window.totalContasFixas = total;
+                calcularTudo();
             }));
 
-            // Escutar Gastos
+            // Escutar Débitos Pendentes
+            unsubs.push(onSnapshot(collection(db, "debitos_pendentes"), (snap) => {
+                let html = '', totalRestante = 0;
+                snap.forEach(d => {
+                    const data = d.data();
+                    if (!data.quitado) totalRestante += data.valorRestante;
+                    html += `<div class="bg-white p-3.5 rounded-xl flex justify-between items-center border border-slate-200 shadow-sm text-xs">
+                        <div>
+                            <span class="font-bold text-slate-800 block">${data.desc}</span>
+                            <span class="text-[10px] text-amber-600 font-medium">Prestação Mensal: ${fmt(data.parcelaMensal)}</span>
+                        </div>
+                        <div class="flex gap-3 items-center font-mono font-bold text-slate-900">
+                            <div>
+                                <span class="block">${fmt(data.valorRestante)}</span>
+                                <span class="text-[9px] font-sans font-normal text-slate-400 block">Devedor</span>
+                            </div>
+                            <button onclick="remover('debitos_pendentes','${d.id}')" class="text-slate-300 hover:text-rose-500">✕</button>
+                        </div>
+                    </div>`;
+                });
+                document.getElementById('lista-debitos').innerHTML = html;
+                window.totalDebitos = totalRestante;
+                calcularTudo();
+            }));
+
+            // Escutar Gastos Variáveis
             unsubs.push(onSnapshot(query(collection(db, "gastos"), where("mesRef", "==", mes)), (snap) => {
                 let html = '', total = 0; 
                 snap.forEach(d => { 
@@ -433,27 +462,30 @@
         }
 
         function calcularTudo() {
-            const rendasFixas = window.totalRendasFixas || 0;
-            const brutoM = rendasFixas + (window.totalP_EUR || 0) + (window.totalE || 0);
-            const gastosM = window.totalG || 0;
-            const dizimoM = brutoM * 0.10;
-            const liqM = brutoM - dizimoM - gastosM;
-            const saldoG = (window.saldoAnterior || 0) + liqM;
+            const entradasTotal = (window.totalRendasFixas || 0) + (window.totalP_EUR || 0);
+            const despesasFixas = window.totalContasFixas || 0;
+            const despesasVariaveis = window.totalG || 0;
+            const despesasTotal = despesasFixas + despesasVariaveis;
+            
+            const dizimo = entradasTotal * 0.10;
+            const liquido = entradasTotal - dizimo - despesasTotal;
 
-            document.getElementById('top-ganhos').innerText = fmt(brutoM);
-            document.getElementById('top-gastos').innerText = fmt(gastosM);
-            document.getElementById('top-mensal').innerText = fmt(liqM);
-            document.getElementById('top-saldo').innerText = fmt(saldoG);
-            document.getElementById('res-bruto').innerText = fmt(brutoM);
-            document.getElementById('res-dizimo').innerText = fmt(dizimoM);
-            document.getElementById('res-liquido').innerText = fmt(liqM);
+            document.getElementById('top-ganhos').innerText = fmt(entradasTotal);
+            document.getElementById('top-gastos').innerText = fmt(despesasTotal);
+            document.getElementById('top-mensal').innerText = fmt(liquido);
+            document.getElementById('top-debitos').innerText = fmt(window.totalDebitos || 0);
 
-            document.getElementById('top-mensal').className = `text-sm font-mono font-bold mt-0.5 ${liqM >= 0 ? 'text-slate-900' : 'text-rose-600'}`;
-            document.getElementById('top-saldo').className = `text-sm font-mono font-bold mt-0.5 ${saldoG >= 0 ? 'text-slate-900' : 'text-rose-600'}`;
+            document.getElementById('res-bruto').innerText = fmt(entradasTotal);
+            document.getElementById('res-dizimo').innerText = fmt(dizimo);
+            document.getElementById('res-liquido').innerText = fmt(liquido);
+            document.getElementById('res-total-debitos').innerText = fmt(window.totalDebitos || 0);
 
-            const cardDet = document.getElementById('card-liq-detalhe');
-            cardDet.className = `p-5 rounded-2xl border shadow-sm transition-all ${liqM >= 0 ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-rose-50/50 border-rose-200 text-rose-700'}`;
-            document.getElementById('res-liquido').className = `text-2xl font-mono font-bold mt-1 ${liqM >= 0 ? 'text-slate-900' : 'text-rose-600'}`;
+            const elemPoupar = document.getElementById('res-pode-poupar');
+            if (liquido > 0) {
+                elemPoupar.innerText = ` Capaz de guardar até ${fmt(liquido)} este mês após dízimo e despesas!`;
+            } else {
+                elemPoupar.innerText = ` Déficit de ${fmt(Math.abs(liquido))} para cobrir todos os custos este mês.`;
+            }
         }
 
         async function gerarRelatorioAnual() {
@@ -467,8 +499,6 @@
             pS.forEach(d => tB += (d.data().horas * vhEUR));
             const rS = await getDocs(query(collection(db, "rendas_lista"), where("ano", "==", ano)));
             rS.forEach(d => tB += d.data().valor);
-            const eS = await getDocs(query(collection(db, "extras"), where("ano", "==", ano)));
-            eS.forEach(d => tB += d.data().valor);
             const gS = await getDocs(query(collection(db, "gastos"), where("ano", "==", ano)));
             gS.forEach(d => tG += d.data().val);
             
@@ -486,11 +516,11 @@
                         <span class="text-amber-600 font-mono font-bold">${fmt(tD)}</span>
                     </div>
                     <div class="flex justify-between items-center text-xs py-2 border-b border-slate-100">
-                        <span class="text-rose-600 font-medium">Despesas Totais</span>
+                        <span class="text-rose-600 font-medium">Despesas Variáveis Lançadas</span>
                         <span class="text-rose-600 font-mono font-bold">${fmt(tG)}</span>
                     </div>
                     <div class="bg-slate-50 p-4 rounded-xl text-center border border-slate-200 mt-4">
-                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Lucro Real Acumulado</p>
+                        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">Lucro / Sobra Real Acumulada</p>
                         <span class="text-xl font-mono font-bold ${tL >= 0 ? 'text-slate-900' : 'text-rose-600'}">${fmt(tL)}</span>
                     </div>
                 </div>`;
